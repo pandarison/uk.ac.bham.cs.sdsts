@@ -14,19 +14,12 @@ import kodkod.engine.fol2sat.HigherOrderDeclException;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.ui.PlatformUI;
-
 import uk.ac.bham.cs.sdsts.SDConsole;
-import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.cs.sdsts.editor.AlloyEditor;
 
 import edu.mit.csail.sdg.alloy4.A4Reporter;
@@ -35,10 +28,8 @@ import edu.mit.csail.sdg.alloy4.Err;
 import edu.mit.csail.sdg.alloy4.ErrorFatal;
 import edu.mit.csail.sdg.alloy4.ErrorType;
 import edu.mit.csail.sdg.alloy4.ErrorWarning;
-import edu.mit.csail.sdg.alloy4.OurUtil;
 import edu.mit.csail.sdg.alloy4.Util;
 import edu.mit.csail.sdg.alloy4.Version;
-import edu.mit.csail.sdg.alloy4.WorkerEngine;
 import edu.mit.csail.sdg.alloy4.XMLNode;
 import edu.mit.csail.sdg.alloy4.Util.BooleanPref;
 import edu.mit.csail.sdg.alloy4compiler.ast.Command;
@@ -58,7 +49,6 @@ import edu.mit.csail.sdg.alloy4compiler.translator.A4Tuple;
 import edu.mit.csail.sdg.alloy4compiler.translator.A4TupleSet;
 import edu.mit.csail.sdg.alloy4compiler.translator.TranslateAlloyToKodkod;
 import edu.mit.csail.sdg.alloy4viz.VizGUI;
-import edu.mit.csail.sdg.alloy4whole.SimpleGUI;
 
 public class CallOpenAlloyViz extends AbstractHandler {
 
@@ -129,7 +119,6 @@ public class CallOpenAlloyViz extends AbstractHandler {
 				String firstNum = tmpString.substring(1, tmpString.indexOf(','));
 				tmpString = tmpString.substring(tmpString.indexOf("column "));
 				tmpString = tmpString.substring(tmpString.indexOf(" "));
-				String secondNum = tmpString.substring(1);
 				AlloyEditor.coloraLineColumn(Integer.parseInt(firstNum), e.pos.x, e.pos.x2);
 				//AlloyEditor.coloraLineColumn(Integer.parseInt(firstNum), e.pos.x, e.pos.x2 - e.pos.x);
 			}

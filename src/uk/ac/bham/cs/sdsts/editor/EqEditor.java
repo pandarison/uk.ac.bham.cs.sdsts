@@ -41,7 +41,9 @@ import uk.ac.bham.cs.sdsts.common.Equality;
 import uk.ac.bham.cs.sdsts.common.Model;
 import uk.ac.bham.cs.sdsts.common.ModelManager;
 import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
+import uk.ac.bham.cs.sdsts.core.synthesis.Xml2obj;
 
+@SuppressWarnings("restriction")
 public class EqEditor extends EditorPart {
 	public static final String ID = "uk.ac.bham.cs.sdsts.editor.EqEditor";
 	private EqEditorInput input;
@@ -126,7 +128,7 @@ public class EqEditor extends EditorPart {
 				ArrayList<String> items = new ArrayList<String>();
 				for (Model model : ModelManager.getInstance().getModels()) {
 					if(model instanceof SequenceDiagram){
-						org.eclipse.uml2.uml.Model umlModel = xmi2obj.xml2obj.load(((SequenceDiagram) model).getFilePath());
+						org.eclipse.uml2.uml.Model umlModel = Xml2obj.load(((SequenceDiagram) model).getFilePath());
 						for (Element element : umlModel.getOwnedElements().get(0).getOwnedElements()) {
 							if(element instanceof MessageImpl){
 								if(!text2.getText().equals(String.format("%s_%s", model.getName(), ((MessageImpl) element).getName())))
@@ -179,7 +181,7 @@ public class EqEditor extends EditorPart {
 				ArrayList<String> items = new ArrayList<String>();
 				for (Model model : ModelManager.getInstance().getModels()) {
 					if(model instanceof SequenceDiagram){
-						org.eclipse.uml2.uml.Model umlModel = xmi2obj.xml2obj.load(((SequenceDiagram) model).getFilePath());
+						org.eclipse.uml2.uml.Model umlModel = Xml2obj.load(((SequenceDiagram) model).getFilePath());
 						for (Element element : umlModel.getOwnedElements().get(0).getOwnedElements()) {
 							if(element instanceof MessageImpl){
 								if(!text1.getText().equals(String.format("%s_%s", model.getName(), ((MessageImpl) element).getName())))
