@@ -4,7 +4,7 @@ import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Model;
 
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
-
+import uk.ac.bham.cs.sdsts.core.synthesis.Xml2obj;
 
 public class Main {
 
@@ -17,8 +17,8 @@ public class Main {
 	}
 	public static void test1(){
 
-		Model model = xmi2obj.xml2obj.load("/Users/chenyi/Documents/workspace/SdSts/resource/model2.uml");
-		Model model2 = xmi2obj.xml2obj.load("/Users/chenyi/Documents/workspace/SdSts/resource/model3.uml");
+		Model model = Xml2obj.load("/Users/chenyi/Documents/workspace/SdSts/resource/model2.uml");
+		Model model2 = Xml2obj.load("/Users/chenyi/Documents/workspace/SdSts/resource/model3.uml");
 		AlloyModel.getInstance().addModel(model, "SD1");
 		AlloyModel.getInstance().addModel(model2, "SD2");
 		AlloyModel.getInstance().getResult();

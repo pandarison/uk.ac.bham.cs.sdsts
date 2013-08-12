@@ -3,8 +3,6 @@ package uk.ac.bham.cs.sdsts.handler;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.ui.IWorkbenchPage;
@@ -18,6 +16,7 @@ import uk.ac.bham.cs.sdsts.SDConsole;
 import uk.ac.bham.cs.sdsts.common.ModelManager;
 import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
+import uk.ac.bham.cs.sdsts.core.synthesis.Xml2obj;
 import uk.ac.bham.cs.sdsts.editor.AlloyEditor;
 import uk.ac.bham.cs.sdsts.editor.AlloyEditorInput;
 
@@ -40,7 +39,7 @@ public class CallOpenAlloyEditor extends AbstractHandler {
 		SDConsole.print_has_time("Generating Alloy Model for: " + sequenceDiagram.getiFile().getLocation().toOSString());
 		AlloyModel.clear();
 		
-		org.eclipse.uml2.uml.Model umlModel = xmi2obj.xml2obj.load(sequenceDiagram.getFilePath());
+		org.eclipse.uml2.uml.Model umlModel = Xml2obj.load(sequenceDiagram.getFilePath());
 		AlloyModel.getInstance().addModel(umlModel, sequenceDiagram.getName());
 		SDConsole.print_has_time("The Alloy Model for " + sequenceDiagram.getName() + " is shown in editor.");
 		SDConsole.print_stars();

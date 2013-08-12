@@ -1,9 +1,7 @@
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.uml2.uml.CombinedFragment;
-import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.InteractionOperand;
 import org.eclipse.uml2.uml.InteractionOperatorKind;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;

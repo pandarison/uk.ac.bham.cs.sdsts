@@ -1,6 +1,5 @@
 package uk.ac.bham.cs.sdsts.handler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,17 +8,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleConstants;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.IConsoleView;
-import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -29,6 +18,7 @@ import uk.ac.bham.cs.sdsts.common.Model;
 import uk.ac.bham.cs.sdsts.common.ModelManager;
 import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
+import uk.ac.bham.cs.sdsts.core.synthesis.Xml2obj;
 
 
 public class CallMerge extends AbstractHandler {
@@ -36,9 +26,6 @@ public class CallMerge extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-		IWorkbenchPage page = window.getActivePage();
-		
-		
 		// select the equality file
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(window.getShell(), new LabelProvider());
 				
@@ -62,7 +49,7 @@ public class CallMerge extends AbstractHandler {
 		for (Model model : models) {
 			if(model instanceof SequenceDiagram){
 				String filepath = ((SequenceDiagram) model).getFilePath();
-				org.eclipse.uml2.uml.Model umlModel = xmi2obj.xml2obj.load(filepath);
+				org.eclipse.uml2.uml.Model umlModel = Xml2obj.load(filepath);
 				SDConsole.print_has_time("Added sequence diagram model: " + filepath);
 				AlloyModel.getInstance().addModel(umlModel, model.getName());
 			}
