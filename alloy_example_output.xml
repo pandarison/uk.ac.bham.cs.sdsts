@@ -1,0 +1,159 @@
+<alloy builddate="2012-09-25 15:54 EDT">
+
+<instance bitwidth="0" maxseq="0" command="Run merge" filename="">
+
+<sig label="seq/Int" ID="0" parentID="1" builtin="yes">
+</sig>
+
+<sig label="Int" ID="1" parentID="2" builtin="yes">
+</sig>
+
+<sig label="String" ID="3" parentID="2" builtin="yes">
+</sig>
+
+<sig label="this/SD2_Lifeline_1" ID="4" parentID="5" lone="yes">
+</sig>
+
+<field label="type" ID="6" parentID="4">
+   <types> <type ID="4"/> <type ID="7"/> </types>
+</field>
+
+<field label="name" ID="8" parentID="4">
+   <types> <type ID="4"/> <type ID="9"/> </types>
+</field>
+
+<sig label="this/SD2_Lifeline_2" ID="10" parentID="5" lone="yes">
+</sig>
+
+<field label="type" ID="11" parentID="10">
+   <types> <type ID="10"/> <type ID="12"/> </types>
+</field>
+
+<field label="name" ID="13" parentID="10">
+   <types> <type ID="10"/> <type ID="14"/> </types>
+</field>
+
+<sig label="this/SD1_Lifeline_1" ID="15" parentID="5" one="yes">
+   <atom label="SD1_Lifeline_1$0"/>
+</sig>
+
+<field label="type" ID="16" parentID="15">
+   <tuple> <atom label="SD1_Lifeline_1$0"/> <atom label="CLASS_A$0"/> </tuple>
+   <types> <type ID="15"/> <type ID="7"/> </types>
+</field>
+
+<field label="name" ID="17" parentID="15">
+   <tuple> <atom label="SD1_Lifeline_1$0"/> <atom label="NAME_L1$0"/> </tuple>
+   <types> <type ID="15"/> <type ID="9"/> </types>
+</field>
+
+<sig label="this/SD1_Lifeline_2" ID="18" parentID="5" one="yes">
+   <atom label="SD1_Lifeline_2$0"/>
+</sig>
+
+<field label="type" ID="19" parentID="18">
+   <tuple> <atom label="SD1_Lifeline_2$0"/> <atom label="CLASS_B$0"/> </tuple>
+   <types> <type ID="18"/> <type ID="12"/> </types>
+</field>
+
+<field label="name" ID="20" parentID="18">
+   <tuple> <atom label="SD1_Lifeline_2$0"/> <atom label="NAME_L2$0"/> </tuple>
+   <types> <type ID="18"/> <type ID="14"/> </types>
+</field>
+
+<sig label="this/LIFELINE" ID="5" parentID="2" abstract="yes">
+</sig>
+
+<sig label="this/SD2_M1" ID="21" parentID="22" one="yes">
+   <atom label="SD2_M1$0"/>
+</sig>
+
+<field label="send" ID="23" parentID="21">
+   <tuple> <atom label="SD2_M1$0"/> <atom label="SD1_MessageSend$0"/> </tuple>
+   <types> <type ID="21"/> <type ID="24"/> </types>
+</field>
+
+<field label="receive" ID="25" parentID="21">
+   <tuple> <atom label="SD2_M1$0"/> <atom label="SD1_MessageRecv$0"/> </tuple>
+   <types> <type ID="21"/> <type ID="26"/> </types>
+</field>
+
+<sig label="this/SD1_M1" ID="27" parentID="22" one="yes">
+   <atom label="SD1_M1$0"/>
+</sig>
+
+<field label="send" ID="28" parentID="27">
+   <tuple> <atom label="SD1_M1$0"/> <atom label="SD1_MessageSend$0"/> </tuple>
+   <types> <type ID="27"/> <type ID="24"/> </types>
+</field>
+
+<field label="receive" ID="29" parentID="27">
+   <tuple> <atom label="SD1_M1$0"/> <atom label="SD1_MessageRecv$0"/> </tuple>
+   <types> <type ID="27"/> <type ID="26"/> </types>
+</field>
+
+<sig label="this/MESSAGE" ID="22" parentID="2" abstract="yes">
+</sig>
+
+<sig label="this/SD2_MessageSend" ID="30" parentID="31" lone="yes">
+</sig>
+
+<field label="occur" ID="32" parentID="30">
+   <types> <type ID="30"/> <type ID="4"/> </types>
+</field>
+
+<sig label="this/SD1_MessageSend" ID="24" parentID="31" one="yes">
+   <atom label="SD1_MessageSend$0"/>
+</sig>
+
+<field label="occur" ID="33" parentID="24">
+   <tuple> <atom label="SD1_MessageSend$0"/> <atom label="SD1_Lifeline_1$0"/> </tuple>
+   <types> <type ID="24"/> <type ID="15"/> </types>
+</field>
+
+<sig label="this/SD1_MessageRecv" ID="26" parentID="31" one="yes">
+   <atom label="SD1_MessageRecv$0"/>
+</sig>
+
+<field label="occur" ID="34" parentID="26">
+   <tuple> <atom label="SD1_MessageRecv$0"/> <atom label="SD1_Lifeline_2$0"/> </tuple>
+   <types> <type ID="26"/> <type ID="18"/> </types>
+</field>
+
+<sig label="this/SD2_MessageRecv" ID="35" parentID="31" lone="yes">
+</sig>
+
+<field label="occur" ID="36" parentID="35">
+   <types> <type ID="35"/> <type ID="10"/> </types>
+</field>
+
+<sig label="this/EVENT" ID="31" parentID="2" abstract="yes">
+</sig>
+
+<field label="ISBEFORE" ID="37" parentID="31">
+   <tuple> <atom label="SD1_MessageRecv$0"/> <atom label="SD1_MessageSend$0"/> </tuple>
+   <types> <type ID="31"/> <type ID="31"/> </types>
+</field>
+
+<sig label="this/NAME_L2" ID="14" parentID="2" one="yes">
+   <atom label="NAME_L2$0"/>
+</sig>
+
+<sig label="this/NAME_L1" ID="9" parentID="2" one="yes">
+   <atom label="NAME_L1$0"/>
+</sig>
+
+<sig label="this/CLASS_A" ID="7" parentID="2" one="yes">
+   <atom label="CLASS_A$0"/>
+</sig>
+
+<sig label="this/CLASS_B" ID="12" parentID="2" one="yes">
+   <atom label="CLASS_B$0"/>
+</sig>
+
+<sig label="univ" ID="2" builtin="yes">
+</sig>
+
+</instance>
+
+</alloy>

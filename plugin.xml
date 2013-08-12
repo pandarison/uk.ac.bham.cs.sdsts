@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="splashExtension" name="Splash Extensions" schema="schema/splashExtension.exsd"/>
+ 
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            icon="icons/win.png">
+         <run
+               class="uk.ac.bham.cs.sdsts.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="uk.ac.bham.cs.sdsts.Perspective"
+            icon="icons/win.png"
+            id="uk.ac.bham.cs.sdsts.perspective"
+            name="Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="uk.ac.bham.cs.sdsts.View"
+            icon="icons/win.png"
+            id="uk.ac.bham.cs.sdsts.view"
+            name="View">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="*">
+         <view
+               standalone="true"
+               minimized="false"
+               relative="org.eclipse.ui.editorss"
+               relationship="left"
+               id="uk.ac.bham.cs.sdsts.view">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               label="File">
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.CreateSdFile"
+                  icon="icons/Add.png"
+                  label="Create Sequence Diagram"
+                  style="push">
+            </command>
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.CreateEqFile"
+                  icon="icons/Add.png"
+                  label="Create Equality File"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               label="Edit">
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.doSave"
+                  icon="icons/Lock.png"
+                  label="Save"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               label="Tool">
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.merge"
+                  icon="icons/Refresh.png"
+                  label="Merge"
+                  style="push">
+            </command>
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.OpenAlloyEditor"
+                  label="Show Alloy Model"
+                  style="push">
+               <visibleWhen>
+                  <with
+                        variable="activeEditorId">
+                     <equals
+                           value="org.eclipse.papyrus.infra.core.papyrusEditor">
+                     </equals>
+                  </with>
+               </visibleWhen>
+            </command>
+         </menu>
+         <menu
+               label="Run">
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.OpenAlloyViz"
+                  label="Show Alloy Graph"
+                  style="push">
+            </command>
+            <visibleWhen>
+   <with variable="activeEditorId">
+      <equals value="uk.ac.bham.cs.sdsts.editor.AlloyEditor"/>
+   </with>
+</visibleWhen>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="uk.ac.bham.cs.sdsts.editor.EqEditor"
+            default="false"
+            icon="icons/alt_window_16.gif"
+            id="uk.ac.bham.cs.sdsts.editor.EqEditor"
+            name="Equality Editor">
+      </editor>
+      <editor
+            class="uk.ac.bham.cs.sdsts.editor.AlloyEditor"
+            default="false"
+            icon="icons/alt_window_16.gif"
+            id="uk.ac.bham.cs.sdsts.editor.AlloyEditor"
+            name="Alloy Model Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallEqEditor"
+            id="uk.ac.bham.cs.sdsts.openEqEditor"
+            name="Open Equality Editor">
+      </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallCreateEqFile"
+            id="uk.ac.bham.cs.sdsts.CreateEqFile"
+            name="Create Equality File">
+      </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallDoSave"
+            id="uk.ac.bham.cs.sdsts.doSave"
+            name="Save">
+      </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallCreateSdFile"
+            id="uk.ac.bham.cs.sdsts.CreateSdFile"
+            name="Create Sequence Diagram">
+      </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallMerge"
+            id="uk.ac.bham.cs.sdsts.merge"
+            name="Merge">
+      </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallOpenAlloyViz"
+            id="uk.ac.bham.cs.sdsts.OpenAlloyViz"
+            name="Open Alloy Viz">
+      </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallOpenAlloyEditor"
+            id="uk.ac.bham.cs.sdsts.OpenAlloyEditor"
+            name="Open Alloy Editor">
+      </command>
+   </extension>
+   
+   
+   <extension point="org.eclipse.ui.activities">
+   	<activity id="someid.remove" name="RemoveSearchMenu">
+   		<enabledWhen>
+   			<with variable="activePartId">
+   			<equals value="someidr.RemoveSearchMenu1"> </equals>
+   			</with>
+   		</enabledWhen>
+ 	</activity>
+ 	<activityPatternBinding activityId="someid.remove" pattern="org.eclipse.search.*">
+ 	</activityPatternBinding>
+   </extension>
+   <extension
+         id="sdsts"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="uk.ac.bham.cs.sdsts.application"
+            name="SD Synthesizer">
+         <property
+               name="appName"
+               value="SD Synthesizer">
+         </property>
+         <property
+               name="aboutText"
+               value="Sequence diagram synthesizer.">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="0,280,455,15">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="DD2E31">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="0,280,445,20">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/alt_window_16.gif,icons/icon32.png,icons/icon48.png,icons/icon64.png">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="uk.ac.bham.cs.sdsts.splashHandlers.ExtensibleSplashHandler"
+            id="uk.ac.bham.cs.sdsts.splashHandlers.extensible">
+      </splashHandler>
+   </extension>
+   <extension
+         point="uk.ac.bham.cs.sdsts.splashExtension">
+      <splashExtension
+            icon="icons/af.png"
+            id="af"
+            tooltip="Application Framework">
+      </splashExtension>
+      <splashExtension
+            icon="icons/embedded.png"
+            id="embedded"
+            tooltip="Embedded">
+      </splashExtension>
+      <splashExtension
+            icon="icons/enterprise.png"
+            id="enterprise"
+            tooltip="Enterprise">
+      </splashExtension>
+      <splashExtension
+            icon="icons/languages.png"
+            id="languages"
+            tooltip="Languages">
+      </splashExtension>
+      <splashExtension
+            icon="icons/rcp.png"
+            id="rcp"
+            tooltip="RCP">
+      </splashExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="uk.ac.bham.cs.sdsts.doSave"
+            schemeId="uk.ac.bham.cs.sdsts.scheme1"
+            sequence="M4+S">
+      </key>
+      <scheme
+            id="uk.ac.bham.cs.sdsts.scheme1"
+            name="uk.ac.bham.cs.sdsts.scheme1">
+      </scheme>
+   </extension>
+<extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="TreeOutlinePage"
+            labelProvider="org.eclipse.papyrus.views.properties.providers.SelectionLabelProvider"
+            tabDescriptorProvider="org.eclipse.papyrus.views.properties.xwt.XWTTabDescriptorProvider">
+         <propertyCategory
+               category="org.eclipse.papyrus"></propertyCategory>
+      </propertyContributor>
+   </extension>
+
+   
+</plugin>

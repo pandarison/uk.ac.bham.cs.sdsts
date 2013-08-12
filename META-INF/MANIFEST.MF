@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Sdsts
+Bundle-SymbolicName: uk.ac.bham.cs.sdsts;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: uk.ac.bham.cs.sdsts.Activator
+Require-Bundle: 
+ org.eclipse.papyrus.uml.diagram.sequence;bundle-version="0.9.2",
+ org.eclipse.gmf.runtime.diagram.ui.properties,
+ org.eclipse.papyrus.uml.diagram.common;bundle-version="0.9.2",
+ org.eclipse.emf.databinding;bundle-version="1.2.0",
+ org.eclipse.papyrus.views.properties;bundle-version="0.9.2",
+ org.eclipse.uml2.uml.resources;bundle-version="4.0.2",
+ org.eclipse.papyrus.uml.diagram.wizards;bundle-version="0.9.2",
+ org.eclipse.papyrus.uml.diagram.clazz;bundle-version="0.9.2"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: 
+ org.eclipse.papyrus.editor,
+ org.eclipse.ui.part
+Bundle-ClassPath: lib/alloy4.2.jar,
+ src/
