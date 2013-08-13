@@ -196,6 +196,7 @@ public class AlloyModel {
 		resultString += "}\n";
 		
 		resultString += "\nfact {all e:EVENT  | e !in e.^ISBEFORE}\n";
+		resultString += "\nfact {no _E: EVENT, _E1: EVENT | _E in _E1.ISBEFORE.^ISBEFORE and _E in _E1.ISBEFORE}\n";
 //		resultString += "\n// predicator\npred merge{\n";
 //		for (Expr expr : _predicator) {
 //			resultString += expr.toString() + "\n";

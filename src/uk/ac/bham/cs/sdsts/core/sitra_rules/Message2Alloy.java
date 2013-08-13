@@ -64,9 +64,9 @@ public class Message2Alloy implements Rule{
 			AlloyModel.getInstance().addSig(event_send);
 			
 			// add the fact send is before receive
-			Expr fact = event_send.in(event_receive.join(event_receive.parent.getFields().get(0))).not();
+			//Expr fact = event_send.in(event_receive.join(event_receive.parent.getFields().get(0))).not();
 			Expr fact1 = event_receive.in(event_send.join(event_send.parent.getFields().get(0)));
-			AlloyModel.getInstance().addFact(fact);
+			//AlloyModel.getInstance().addFact(fact);
 			AlloyModel.getInstance().addFact(fact1);
 			
 			// add the name
