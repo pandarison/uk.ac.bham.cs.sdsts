@@ -89,17 +89,20 @@ public class InteractionOperand2Alloy implements Rule {
 									Expr fact1 = m2sendSig.in(m1sendSig.join(m1sendSig.parent.getFields().get(0)));
 									//	not (Mj.send < Mi.send)
 									Expr fact2 = m1sendSig.in(m2sendSig.join(m1sendSig.parent.getFields().get(0))).not();
+									
 									//	Mi.rec < Mj.rec
 									Expr fact3 = m2recSig.in(m1recSig.join(m1sendSig.parent.getFields().get(0)));
 									//	not (Mj.rec < Mi.rec)	
 									Expr fact4 = m1recSig.in(m2recSig.join(m1sendSig.parent.getFields().get(0))).not();
+									
 									//	not (Mi.send < Mj.rec)
 									Expr fact5 = m2recSig.in(m1sendSig.join(m1sendSig.parent.getFields().get(0))).not();
 									//	not (Mi.send > Mj.rec)			
 									Expr fact6 = m1sendSig.in(m2recSig.join(m1sendSig.parent.getFields().get(0))).not();
-									//	Mi.rec < Mj.send
-									Expr fact7 = m2sendSig.in(m1recSig.join(m1sendSig.parent.getFields().get(0)));
-									//	Mi.rec > Mj.send
+									
+									//	not (Mi.rec < Mj.send)
+									Expr fact7 = m2sendSig.in(m1recSig.join(m1sendSig.parent.getFields().get(0))).not();
+									//	not (Mi.rec > Mj.send)
 									Expr fact8 = m1recSig.in(m2sendSig.join(m1sendSig.parent.getFields().get(0))).not();
 									AlloyModel.getInstance().addFact(fact1);
 									AlloyModel.getInstance().addFact(fact2);

@@ -1,7 +1,10 @@
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 
+import java.util.ArrayList;
+
 import org.eclipse.uml2.uml.CombinedFragment;
+import org.eclipse.uml2.uml.InteractionFragment;
 import org.eclipse.uml2.uml.InteractionOperand;
 import org.eclipse.uml2.uml.InteractionOperatorKind;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
@@ -64,10 +67,14 @@ public class CombinedFragment2Alloy implements Rule {
 			// add fact inside the combined fragment for Par
 			if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.PAR_LITERAL){
 				for (i = 0; i < combinedFragment.getOperands().size(); i++) {
-					for (int j = 0; j < combinedFragment.getOperands().size(); j++) {
-						if(i == j)continue;
+					for (int j = i + 1; j < combinedFragment.getOperands().size(); j++) {
 						InteractionOperand op1 = combinedFragment.getOperands().get(i);
 						InteractionOperand op2 = combinedFragment.getOperands().get(j);
+						for (InteractionFragment fragment : op1.getFragments()) {
+							if(fragment instanceof MessageOccurrenceSpecification){
+								
+							}
+						}
 						MessageOccurrenceSpecification mo1 = (MessageOccurrenceSpecification) op1.getFragments().get(0);
 						MessageOccurrenceSpecification mo2 = (MessageOccurrenceSpecification) op2.getFragments().get(0);
 						
