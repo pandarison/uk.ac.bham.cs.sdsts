@@ -5,6 +5,8 @@ import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Interaction;
 import org.eclipse.uml2.uml.InteractionFragment;
 import org.eclipse.uml2.uml.InteractionOperatorKind;
+import org.eclipse.uml2.uml.Message;
+import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
 import org.eclipse.uml2.uml.internal.impl.CombinedFragmentImpl;
 import org.eclipse.uml2.uml.internal.impl.InteractionImpl;
 import org.eclipse.uml2.uml.internal.impl.LifelineImpl;
@@ -72,6 +74,65 @@ public class Interaction2Alloy implements Rule{
 		} catch (Err e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		// add facts
+		// for every message M(j) after M(i) {
+		for (int i = 0; i < interaction.getFragments().size(); i++) {
+			Message message1 = null;
+			InteractionFragment o1 = interaction.getFragments().get(i);
+			if(o1.getClass().equals(MessageOccurrenceSpecificationImpl.class)){
+				if(!((MessageOccurrenceSpecificationImpl)o1).getMessage().equals(message1)){
+					message1 = ((MessageOccurrenceSpecificationImpl)o1).getMessage();
+					
+					for (int j = i+1; j < interaction.getFragments().size(); j++) {
+						Message message2 = message1;
+						InteractionFragment o2 = interaction.getFragments().get(j);
+						if(o2.getClass().equals(MessageOccurrenceSpecificationImpl.class)){
+							if(!((MessageOccurrenceSpecificationImpl)o2).getMessage().equals(message2)){
+								message2 = ((MessageOccurrenceSpecificationImpl)o2).getMessage();
+								MessageOccurrenceSpecification m1send = (MessageOccurrenceSpecification) message1.getSendEvent();
+								MessageOccurrenceSpecification m1rec = (MessageOccurrenceSpecification) message1.getReceiveEvent();
+								MessageOccurrenceSpecification m2send = (MessageOccurrenceSpecification) message2.getSendEvent();
+								MessageOccurrenceSpecification m2rec = (MessageOccurrenceSpecification) message2.getReceiveEvent();
+								PrimSig m1sendSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + m1send.getName());
+								PrimSig m1recSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + m1rec.getName());
+								PrimSig m2sendSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + m2send.getName());
+								PrimSig m2recSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + m2rec.getName());
+								//	Mi.send < Mj.send
+								Expr fact1 = m2sendSig.in(m1sendSig.join(m1sendSig.parent.getFields().get(0)));
+								//	not (Mj.send < Mi.send)
+								Expr fact2 = m1sendSig.in(m2sendSig.join(m1sendSig.parent.getFields().get(0))).not();
+								
+								//	Mi.rec < Mj.rec
+								Expr fact3 = m2recSig.in(m1recSig.join(m1sendSig.parent.getFields().get(0)));
+								//	not (Mj.rec < Mi.rec)	
+								Expr fact4 = m1recSig.in(m2recSig.join(m1sendSig.parent.getFields().get(0))).not();
+								
+								//	not (Mi.send < Mj.rec)
+								Expr fact5 = m2recSig.in(m1sendSig.join(m1sendSig.parent.getFields().get(0))).not();
+								//	not (Mi.send > Mj.rec)			
+								Expr fact6 = m1sendSig.in(m2recSig.join(m1sendSig.parent.getFields().get(0))).not();
+								
+								//	not (Mi.rec < Mj.send)
+								Expr fact7 = m2sendSig.in(m1recSig.join(m1sendSig.parent.getFields().get(0))).not();
+								//	not (Mi.rec > Mj.send)
+								Expr fact8 = m1recSig.in(m2sendSig.join(m1sendSig.parent.getFields().get(0))).not();
+								AlloyModel.getInstance().addFact(fact1);
+								AlloyModel.getInstance().addFact(fact2);
+								AlloyModel.getInstance().addFact(fact3);
+								AlloyModel.getInstance().addFact(fact4);
+								AlloyModel.getInstance().addFact(fact5);
+								AlloyModel.getInstance().addFact(fact6);
+								AlloyModel.getInstance().addFact(fact7);
+								AlloyModel.getInstance().addFact(fact8);
+							}
+							
+						}
+					}
+				}
+			}
+			
 		}
 		
 		
