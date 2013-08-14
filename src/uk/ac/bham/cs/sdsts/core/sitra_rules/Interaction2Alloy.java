@@ -50,7 +50,24 @@ public class Interaction2Alloy implements Rule{
 		//	Lifelines : Sd one -> Lifelines
 		//	Cf ( if there is ): Sd one ->combine fragment  }
 		try {
-		PrimSig SD = new PrimSig(AlloyModel.getInstance().SD_num, Attr.ONE);
+			
+		
+		
+		// add abstract for event
+		// one sig abstract event{isbefore: set event}
+		PrimSig event_abstract = new PrimSig("EVENT", Attr.ABSTRACT);
+		event_abstract.addField("ISBEFORE", event_abstract.setOf());
+		event_abstract = (PrimSig) AlloyModel.getInstance().addAbstract(event_abstract);	
+		
+		// add abstract for InteractionOperand
+		// abstract sig INTERACTIONOPERAND {}
+		PrimSig interactionOperand_abstract = new PrimSig("INTERACTIONOPERAND", Attr.ABSTRACT);
+		interactionOperand_abstract.addField("cov", event_abstract.setOf());
+		interactionOperand_abstract = (PrimSig) AlloyModel.getInstance().addAbstract(interactionOperand_abstract);
+		
+		PrimSig SD = new PrimSig(AlloyModel.getInstance().SD_num, interactionOperand_abstract, Attr.ONE);
+		
+		
 		for (Element element : interaction.getOwnedElements()) {
 			if(element instanceof LifelineImpl){
 				Expr expr = SD.one_arrow_any((Expr) AlloyModel.getInstance().getSigByName("LIFELINE"));
@@ -72,11 +89,9 @@ public class Interaction2Alloy implements Rule{
 				break;
 			}
 		}
+		
 		AlloyModel.getInstance().addSig(SD);
-		} catch (Err e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		
 		// add facts
 		// for every message M(j) after M(i) {
@@ -84,10 +99,14 @@ public class Interaction2Alloy implements Rule{
 		for (InteractionFragment interactionFragment : interaction.getFragments()) {
 			if(interactionFragment instanceof MessageOccurrenceSpecification){
 				MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
-				if(!messages.contains(event.getMessage()))
+				if(!messages.contains(event.getMessage())){
+					t.transform(event.getMessage());
 					messages.add(event.getMessage());
+				}
+				PrimSig eventSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + interactionFragment.getName());
+				Expr fact1 = eventSig.in(SD.join(SD.parent.getFields().get(0)));
+				AlloyModel.getInstance().addFact(fact1);
 			}
-			
 		}
 		for (int i = 0; i < messages.size() - 1; i++) {
 			Message message1 = messages.get(i);
@@ -240,7 +259,16 @@ public class Interaction2Alloy implements Rule{
 //			alloyString += fact2;
 //		}
 //		
-//		return alloyString;
+//		return alloyString;		
+		} catch (Err e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RuleNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
 	}
 
 	@Override
