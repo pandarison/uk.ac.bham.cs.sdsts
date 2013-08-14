@@ -35,17 +35,24 @@ public class InteractionOperand2Alloy implements Rule {
 	public Object build(Object source, Transformer t) {
 		try {
 			InteractionOperand interactionOperand = (InteractionOperand) source;
+			// add abstract for event
+			// one sig abstract event{isbefore: set event}
+			PrimSig event_abstract = new PrimSig("EVENT", Attr.ABSTRACT);
+			event_abstract.addField("ISBEFORE", event_abstract.setOf());
+			event_abstract = (PrimSig) AlloyModel.getInstance().addAbstract(event_abstract);		
+			
 			
 			// add abstract for InteractionOperand
 			// abstract sig INTERACTIONOPERAND {}
 			PrimSig interactionOperand_abstract = new PrimSig("INTERACTIONOPERAND", Attr.ABSTRACT);
+			interactionOperand_abstract.addField("cov", event_abstract.setOf());
 			interactionOperand_abstract = (PrimSig) AlloyModel.getInstance().addAbstract(interactionOperand_abstract);
+			
+			AlloyModel.getInstance().addFact("//all event can be covered by at most one operand\nfact{all _E:EVENT | lone _OP:INTERACTIONOPERAND | _E in _OP.cov}");
 			
 			// add the interactionOperand
 			// one sig SDid_InteractionName extends INTERACTION {cover1: Message1, cover2: Message2 ...}
 			PrimSig interactionOperandSig = new PrimSig(AlloyModel.getInstance().getSD_prefix() + interactionOperand.getName(), interactionOperand_abstract, Attr.ONE);
-			
-			
 			AlloyModel.getInstance().addSig(interactionOperandSig);
 			
 			
@@ -55,8 +62,13 @@ public class InteractionOperand2Alloy implements Rule {
 			for (InteractionFragment interactionFragment : interactionOperand.getFragments()) {
 				if(interactionFragment instanceof MessageOccurrenceSpecification){
 					MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
-					if(!messages.contains(event.getMessage()))
+					if(!messages.contains(event.getMessage())){
+						t.transform(event.getMessage());
 						messages.add(event.getMessage());
+					}
+					PrimSig eventSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + interactionFragment.getName());
+					Expr fact1 = eventSig.in(interactionOperandSig.join(interactionOperandSig.parent.getFields().get(0)));
+					AlloyModel.getInstance().addFact(fact1);
 				}
 				
 			}

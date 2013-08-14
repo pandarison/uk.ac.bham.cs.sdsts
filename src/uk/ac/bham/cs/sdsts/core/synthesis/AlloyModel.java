@@ -118,85 +118,92 @@ public class AlloyModel {
 	}
 	public String getResult() {
 		// module
-		String resultString = "module SDmerge\n\n// abstracts\n";
+		String resultString = "module SD";
 		
 		// abstract
+		resultString += "\n\n// abstract";
 		for (Object object : _mapping_sigs.values()) {
 			PrimSig p = (PrimSig) object;
-			if(p.isAbstract != null)resultString += String.format("abstract sig %s {%s}\n", p.toString(), fields2String(p.getFields()));
+			if(p.isAbstract != null)resultString += String.format("\nabstract sig %s {%s}", p.toString(), fields2String(p.getFields()));
 		}
 		
 		// classes and names for lifelines, messages
-		resultString += "\n// classes and names\n";
+		resultString += "\n\n// classes and names";
 		for (Object object : _mapping_sigs.values()) {
 			PrimSig p = (PrimSig) object;
 			if(p.isTopLevel() && p.getFields().size() == 0){
-				if(p.isOne != null)resultString += String.format("one sig %s{%s}\n", p.toString(), fields2String(p.getFields()));
-				if(p.isLone != null)resultString += String.format("lone sig %s{%s}\n", p.toString(), fields2String(p.getFields()));
-				if(p.isSome != null)resultString += String.format("some sig %s{%s}\n", p.toString(), fields2String(p.getFields()));
+				if(p.isOne != null)resultString += String.format("\none sig %s{%s}", p.toString(), fields2String(p.getFields()));
+				if(p.isLone != null)resultString += String.format("\nlone sig %s{%s}", p.toString(), fields2String(p.getFields()));
+				if(p.isSome != null)resultString += String.format("\nsome sig %s{%s}", p.toString(), fields2String(p.getFields()));
 			}
 		}
 		
 		// SDs existence of lifelines, messages, combined fragment
-		resultString += "\n// SDs\n";
+		resultString += "\n\n// SDs";
 		for (Object object : _mapping_sigs.values()) {
 			PrimSig p = (PrimSig) object;
 			if (p.isTopLevel() && p.getFields().size() != 0) {
 				if (p.isOne != null)
-					resultString += String.format("one sig %s{%s}\n",
+					resultString += String.format("\none sig %s{%s}",
 							p.toString(), fields2String(p.getFields()));
 				if (p.isLone != null)
-					resultString += String.format("lone sig %s{%s}\n",
+					resultString += String.format("\nlone sig %s{%s}",
 							p.toString(), fields2String(p.getFields()));
 				if (p.isSome != null)
-					resultString += String.format("some sig %s{%s}\n",
+					resultString += String.format("\nsome sig %s{%s}",
 							p.toString(), fields2String(p.getFields()));
 			}
 		}
 		
 		// sigs Lifeline, Message, Event, CombinedFragment
-		resultString += "\n// sigs\n";
+		resultString += "\n\n// sigs";
 		for (Object object : _mapping_sigs.values()) {
 			PrimSig p = (PrimSig) object;
 			if(!p.isTopLevel()){
-				if(p.isOne != null)resultString += String.format("one sig %s extends %s{%s}\n", p.toString(), p.parent, fields2String(p.getFields()));
-				if(p.isLone != null)resultString += String.format("lone sig %s extends %s{%s}\n", p.toString(), p.parent, fields2String(p.getFields()));
-				if(p.isSome != null)resultString += String.format("some sig %s extends %s{%s}\n", p.toString(), p.parent, fields2String(p.getFields()));
+				if(p.isOne != null)resultString += String.format("\none sig %s extends %s{%s}", p.toString(), p.parent, fields2String(p.getFields()));
+				if(p.isLone != null)resultString += String.format("\nlone sig %s extends %s{%s}", p.toString(), p.parent, fields2String(p.getFields()));
+				if(p.isSome != null)resultString += String.format("\nsome sig %s extends %s{%s}", p.toString(), p.parent, fields2String(p.getFields()));
 			}
 		}
-		resultString += "\n// facts\nfact{\n";
+		resultString += "\n\n// facts";
+		resultString += "\nfact{";
 		for (Object object : _mapping_facts.values()) {
 			if(object.getClass() != edu.mit.csail.sdg.alloy4compiler.ast.ExprQt.class)continue;
 			ExprQt expr = (ExprQt) object;
 			String check = expr.decls.get(0).expr.toString();
 			String string = "";
 			if(check.indexOf("_Lifeline_") != -1){
-				string = String.format("(all L1:%s, L2:%s | (L1.name = L2.name && L1.type = L2.type) => # L2 = 0)\n", expr.decls.get(0).expr,expr.decls.get(1).expr);
+				string = String.format("(all L1:%s, L2:%s | (L1.name = L2.name && L1.type = L2.type) => # L2 = 0)", expr.decls.get(0).expr,expr.decls.get(1).expr);
 			}else{
-				string = String.format("(all M1:%s, M2:%s | (M1.name = M2.name) => # M2 = 0)\n", expr.decls.get(0).expr, expr.decls.get(1).expr);
+				string = String.format("(all M1:%s, M2:%s | (M1.name = M2.name) => # M2 = 0)", expr.decls.get(0).expr, expr.decls.get(1).expr);
 			}
-			resultString += string;
+			resultString += "\n" + string;
 		}
-		resultString += "}\n";
+		resultString += "\n}";
 		
-		resultString += "\n// facts\nfact{\n"; //ExprUnary
+		resultString += "\n\nfact{"; //ExprUnary
 		for (Object object : _mapping_facts.values()) {
 			if(object.getClass() != edu.mit.csail.sdg.alloy4compiler.ast.ExprBinary.class)continue;
 			Expr expr = (Expr) object;
-			resultString += String.format("%s\n", expr);
+			resultString += String.format("\n%s", expr);
 		}
-		resultString += "}\n";
+		resultString += "\n}";
 		
-		resultString += "\n// facts\nfact{\n"; //
+		resultString += "\n\nfact{"; //ExprUnary
 		for (Object object : _mapping_facts.values()) {
 			if(object.getClass() != edu.mit.csail.sdg.alloy4compiler.ast.ExprUnary.class)continue;
 			ExprUnary expr = (ExprUnary) object;
-			resultString += String.format("%s\n", expr);
+			resultString += String.format("\n%s", expr);
 		}
-		resultString += "}\n";
+		resultString += "\n}";
 		
-		resultString += "\nfact {all e:EVENT  | e !in e.^ISBEFORE}\n";
-		resultString += "\nfact {no _E: EVENT, _E1: EVENT | _E in _E1.ISBEFORE.^ISBEFORE and _E in _E1.ISBEFORE}\n";
+		for (Object object : _mapping_facts.values()) {
+			if(object.getClass() != String.class)continue;
+			resultString += "\n\n" + object.toString();
+		}
+		
+		resultString += "\n\n//avoid the circle\nfact {all e:EVENT  | e !in e.^ISBEFORE}";
+		resultString += "\n\n//no event can be direct child and subChild of other event at the same time\nfact {no _E: EVENT, _E1: EVENT | _E in _E1.ISBEFORE.^ISBEFORE and _E in _E1.ISBEFORE}";
 //		resultString += "\n// predicator\npred merge{\n";
 //		for (Expr expr : _predicator) {
 //			resultString += expr.toString() + "\n";

@@ -11,7 +11,11 @@ import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
 import org.eclipse.uml2.uml.internal.impl.CombinedFragmentImpl;
 
 import edu.mit.csail.sdg.alloy4.Err;
+import edu.mit.csail.sdg.alloy4.SafeList;
 import edu.mit.csail.sdg.alloy4compiler.ast.Attr;
+import edu.mit.csail.sdg.alloy4compiler.ast.Decl;
+import edu.mit.csail.sdg.alloy4compiler.ast.Expr;
+import edu.mit.csail.sdg.alloy4compiler.ast.Sig.Field;
 import edu.mit.csail.sdg.alloy4compiler.ast.Sig.PrimSig;
 
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
@@ -84,18 +88,24 @@ public class CombinedFragment2Alloy implements Rule {
 			
 			
 			// add fact inside the combined fragment for Alt
-			if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.PAR_LITERAL){
+			String fact_remove_relation = "// remove the relations among evens in different operands of CF_Alt: " + combinedFragmentSig.toString();
+			if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.ALT_LITERAL){
 				for (i = 0; i < combinedFragment.getOperands().size(); i++) {
 					for (int j = i+1; j < combinedFragment.getOperands().size(); j++) {
 						InteractionOperand op1 = combinedFragment.getOperands().get(i);
 						InteractionOperand op2 = combinedFragment.getOperands().get(j);
-						
-						MessageOccurrenceSpecification mo1 = (MessageOccurrenceSpecification) op1.getFragments().get(0);
-						MessageOccurrenceSpecification mo2 = (MessageOccurrenceSpecification) op2.getFragments().get(0);
-						
+						PrimSig op1Sig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + op1.getName());
+						PrimSig op2Sig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + op2.getName());
+//						fact {all _E:sd1_InteractionOperand.cov | no _E1: sd1_InteractionOperand0.cov | _E in _E1.ISBEFORE}
+//						fact {all _E:sd1_InteractionOperand0.cov | no _E1: sd1_InteractionOperand.cov | _E in _E1.ISBEFORE}
+						String fact = String.format("fact {all _E:%s.cov | no _E1: %s.cov | _E in _E1.ISBEFORE}", op1Sig, op2Sig);
+						String fact1 = String.format("fact {all _E:%s.cov | no _E1: %s.cov | _E in _E1.ISBEFORE}", op2Sig, op1Sig);
+						fact_remove_relation += "\n" + fact;
+						fact_remove_relation += "\n" + fact1;
 					}
 				}
-			}			
+			}		
+			AlloyModel.getInstance().addFact(fact_remove_relation);
 
 			
 			
