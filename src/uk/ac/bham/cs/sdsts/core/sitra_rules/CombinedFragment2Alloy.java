@@ -7,6 +7,7 @@ import org.eclipse.uml2.uml.InteractionOperatorKind;
 import org.eclipse.uml2.uml.internal.impl.CombinedFragmentImpl;
 
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;
+import uk.ac.bham.cs.sdsts.Alloy.AFact;
 
 import uk.ac.bham.cs.sdsts.Alloy.ASig;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
@@ -36,6 +37,9 @@ public class CombinedFragment2Alloy implements Rule {
 			ASig combinedFragmentAbstract = AlloyModel.getInstance().getSig("COMBINEDFRAGMENT");
 			combinedFragmentAbstract.set_attr(AAttr.ABSTRACT);
 			combinedFragmentAbstract.zone = "abstract";
+			
+			ASig SD = AlloyModel.getInstance().getSig("_SD_");
+			SD.AddField("COMBINEDFRAGMENT", new AFact("_SD_ one -> COMBINEDFRAGMENT"));
 			
 			// add sig for combinedFragment type
 			ASig cfType = null;

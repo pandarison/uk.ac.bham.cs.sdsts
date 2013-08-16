@@ -4,6 +4,7 @@ import org.eclipse.uml2.uml.Lifeline;
 import org.eclipse.uml2.uml.internal.impl.LifelineImpl;
 
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;
+import uk.ac.bham.cs.sdsts.Alloy.AFact;
 import uk.ac.bham.cs.sdsts.Alloy.ASig;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.sitra.Rule;
@@ -29,6 +30,9 @@ public class Lifeline2Alloy implements Rule{
 		ASig lifelineAbstract = AlloyModel.getInstance().getSig("LIFELINE");
 		lifelineAbstract.set_attr(AAttr.ABSTRACT);
 		lifelineAbstract.zone = "abstract";
+		
+		ASig SD = AlloyModel.getInstance().getSig("_SD_");
+		SD.AddField("LIFELINE", new AFact("_SD_ one -> LIFELINE"));
 		
 		// get the name and class
 		String[] fields = lifeline.getName().split(":");

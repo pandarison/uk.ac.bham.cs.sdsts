@@ -14,6 +14,7 @@ import edu.mit.csail.sdg.alloy4compiler.ast.Expr;
 import edu.mit.csail.sdg.alloy4compiler.ast.Sig.PrimSig;
 
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;
+import uk.ac.bham.cs.sdsts.Alloy.AFact;
 import uk.ac.bham.cs.sdsts.Alloy.ASig;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.sitra.Rule;
@@ -41,6 +42,9 @@ public class Message2Alloy implements Rule{
 		ASig messageAbstract = AlloyModel.getInstance().getSig("MESSAGE");
 		messageAbstract.set_attr(AAttr.ABSTRACT);
 		messageAbstract.zone = "abstract";
+		
+		ASig SD = AlloyModel.getInstance().getSig("_SD_");
+		SD.AddField("MESSAGE", new AFact("_SD_ one -> MESSAGE"));
 		
 		// add abstract for event
 		// one sig abstract event{isbefore: set event}

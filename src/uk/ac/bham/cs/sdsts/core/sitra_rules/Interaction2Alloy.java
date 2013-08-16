@@ -71,6 +71,7 @@ public class Interaction2Alloy implements Rule{
 			// for every message M(j) after M(i) {
 			ArrayList<Message> messages = new ArrayList<Message>();
 			for (InteractionFragment interactionFragment : interaction.getFragments()) {
+				
 				if(interactionFragment instanceof MessageOccurrenceSpecification){
 					MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
 					if(!messages.contains(event.getMessage())){
