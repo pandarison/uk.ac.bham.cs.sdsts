@@ -62,6 +62,7 @@ public class InteractionOperand2Alloy implements Rule {
 					if(!messages.contains(event.getMessage())){
 						event.getMessage().getSendEvent().setName(interactionOperand.getName() + "_" +event.getMessage().getSendEvent().getName());
 						event.getMessage().getReceiveEvent().setName(interactionOperand.getName() + "_" +event.getMessage().getReceiveEvent().getName());
+						event.getMessage().setName(interactionOperand.getName() + "_" + event.getMessage().getName());
 						t.transform(event.getMessage());
 						messages.add(event.getMessage());
 					}
