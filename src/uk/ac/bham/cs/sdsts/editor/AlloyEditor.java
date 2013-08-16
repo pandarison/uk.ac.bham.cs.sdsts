@@ -1,7 +1,5 @@
 package uk.ac.bham.cs.sdsts.editor;
 
-import javax.xml.soap.Text;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -9,7 +7,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -19,9 +16,6 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
-
-import uk.ac.bham.cs.sdsts.SDConsole;
-import uk.ac.bham.cs.sdsts.common.ModelManager;
 
 public class AlloyEditor extends EditorPart {
 

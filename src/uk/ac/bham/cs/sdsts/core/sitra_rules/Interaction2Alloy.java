@@ -2,24 +2,13 @@ package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 import java.util.ArrayList;
 
-import org.eclipse.uml2.uml.CombinedFragment;
-import org.eclipse.uml2.uml.Element;
 import org.eclipse.uml2.uml.Interaction;
 import org.eclipse.uml2.uml.InteractionFragment;
-import org.eclipse.uml2.uml.InteractionOperatorKind;
 import org.eclipse.uml2.uml.Message;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
-import org.eclipse.uml2.uml.internal.impl.CombinedFragmentImpl;
 import org.eclipse.uml2.uml.internal.impl.InteractionImpl;
-import org.eclipse.uml2.uml.internal.impl.LifelineImpl;
-import org.eclipse.uml2.uml.internal.impl.MessageOccurrenceSpecificationImpl;
-
-import edu.mit.csail.sdg.alloy4.Err;
-import edu.mit.csail.sdg.alloy4compiler.ast.Attr;
-import edu.mit.csail.sdg.alloy4compiler.ast.Expr;
-import edu.mit.csail.sdg.alloy4compiler.ast.Sig.PrimSig;
-
-import uk.ac.bham.cs.sdsts.SDConsole;
+import uk.ac.bham.cs.sdsts.Alloy.AAttr;
+import uk.ac.bham.cs.sdsts.Alloy.ASig;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.sitra.Rule;
 import uk.ac.bham.sitra.RuleNotFoundException;
@@ -37,238 +26,88 @@ public class Interaction2Alloy implements Rule{
 
 	@Override
 	public Object build(Object source, Transformer t) {
+		// transform the members first
 		Interaction interaction = (Interaction) source;
+		String currentSD = AlloyModel.getInstance().getSD();
+		String currentSD_ = AlloyModel.getInstance().getSD() + "_";
 		try {
 			t.transformAll(interaction.getOwnedElements());
 		} catch (RuleNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//  add sig
-		//	One sig Sd { 
-		//	Messages : Sd one -> Messages,
-		//	Lifelines : Sd one -> Lifelines
-		//	Cf ( if there is ): Sd one ->combine fragment  }
-		try {
-			
-		
-		
-		// add abstract for event
-		// one sig abstract event{isbefore: set event}
-		PrimSig event_abstract = new PrimSig("EVENT", Attr.ABSTRACT);
-		event_abstract.addField("ISBEFORE", event_abstract.setOf());
-		event_abstract = (PrimSig) AlloyModel.getInstance().addAbstract(event_abstract);	
-		
-		// add abstract for InteractionOperand
-		// abstract sig INTERACTIONOPERAND {}
-		PrimSig interactionOperand_abstract = new PrimSig("INTERACTIONOPERAND", Attr.ABSTRACT);
-		interactionOperand_abstract.addField("cov", event_abstract.setOf());
-		interactionOperand_abstract = (PrimSig) AlloyModel.getInstance().addAbstract(interactionOperand_abstract);
-		
-		PrimSig SD = new PrimSig(AlloyModel.getInstance().SD_num, interactionOperand_abstract, Attr.ONE);
-		
-		
-		for (Element element : interaction.getOwnedElements()) {
-			if(element instanceof LifelineImpl){
-				Expr expr = SD.one_arrow_any((Expr) AlloyModel.getInstance().getSigByName("LIFELINE"));
-				SD.addField("LIFELINE", expr);
-				break;
-			}
-		}
-		for (Element element : interaction.getOwnedElements()) {
-			if(element instanceof LifelineImpl){
-				Expr expr = SD.one_arrow_any((Expr) AlloyModel.getInstance().getSigByName("MESSAGE"));
-				SD.addField("MESSAGE", expr);
-				break;
-			}
-		}
-		for (Element element : interaction.getOwnedElements()) {
-			if(element instanceof CombinedFragmentImpl){
-				Expr expr = SD.one_arrow_any((Expr) AlloyModel.getInstance().getSigByName("COMBINEDFRAGMENT"));
-				SD.addField("COMBINEDFRAGMENT", expr);
-				break;
-			}
-		}
-		
-		AlloyModel.getInstance().addSig(SD);
-		
-		
-		// add facts
-		// for every message M(j) after M(i) {
-		ArrayList<Message> messages = new ArrayList<Message>();
-		for (InteractionFragment interactionFragment : interaction.getFragments()) {
-			if(interactionFragment instanceof MessageOccurrenceSpecification){
-				MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
-				if(!messages.contains(event.getMessage())){
-					t.transform(event.getMessage());
-					messages.add(event.getMessage());
-				}
-				PrimSig eventSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + interactionFragment.getName());
-				Expr fact1 = eventSig.in(SD.join(SD.parent.getFields().get(0)));
-				AlloyModel.getInstance().addFact(fact1);
-			}
-		}
-		for (int i = 0; i < messages.size() - 1; i++) {
-			Message message1 = messages.get(i);
-			for (int j = i+1; j < messages.size(); j++) {
-				Message message2 = messages.get(j);
-				System.out.println(String.format("%s   %s", message1.getName(), message2.getName()));
-				MessageOccurrenceSpecification m1send = (MessageOccurrenceSpecification) message1.getSendEvent();
-				MessageOccurrenceSpecification m1rec = (MessageOccurrenceSpecification) message1.getReceiveEvent();
-				MessageOccurrenceSpecification m2send = (MessageOccurrenceSpecification) message2.getSendEvent();
-				MessageOccurrenceSpecification m2rec = (MessageOccurrenceSpecification) message2.getReceiveEvent();
-				PrimSig m1sendSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + m1send.getName());
-				PrimSig m1recSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + m1rec.getName());
-				PrimSig m2sendSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + m2send.getName());
-				PrimSig m2recSig = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + m2rec.getName());
-				//	Mi.send < Mj.send
-				Expr fact1 = m2sendSig.in(m1sendSig.join(m1sendSig.parent.getFields().get(0)));
-				//	not (Mj.send < Mi.send)
-				//Expr fact2 = m1sendSig.in(m2sendSig.join(m1sendSig.parent.getFields().get(0))).not();
-								
-				//	Mi.rec < Mj.rec
-				Expr fact3 = m2recSig.in(m1recSig.join(m1sendSig.parent.getFields().get(0)));
-				//	not (Mj.rec < Mi.rec)	
-				//Expr fact4 = m1recSig.in(m2recSig.join(m1sendSig.parent.getFields().get(0))).not();
-								
-				//	not (Mi.send < Mj.rec)
-				//Expr fact5 = m2recSig.in(m1sendSig.join(m1sendSig.parent.getFields().get(0))).not();
-				//	not (Mi.send > Mj.rec)			
-				//Expr fact6 = m1sendSig.in(m2recSig.join(m1sendSig.parent.getFields().get(0))).not();
-								
-				//	not (Mi.rec < Mj.send)
-				Expr fact7 = m2sendSig.in(m1recSig.join(m1sendSig.parent.getFields().get(0))).not();
-				//	not (Mi.rec > Mj.send)
-				Expr fact8 = m1recSig.in(m2sendSig.join(m1sendSig.parent.getFields().get(0))).not();
-				if(j == i + 1){
-					AlloyModel.getInstance().addFact(fact1);
-					AlloyModel.getInstance().addFact(fact3);
-				}
-				
-				//AlloyModel.getInstance().addFact(fact2);
-				//AlloyModel.getInstance().addFact(fact4);
-				//AlloyModel.getInstance().addFact(fact5);
-				//AlloyModel.getInstance().addFact(fact6);
-				AlloyModel.getInstance().addFact(fact7);
-				AlloyModel.getInstance().addFact(fact8);
-			}						
-		}
-		
-		
-//		// add facts
-//		for (int i = 0; i < interaction.getFragments().size(); i++) {
-//			for (int j = i+1; j < interaction.getFragments().size(); j++) {
-//				InteractionFragment o1 = interaction.getFragments().get(i);
-//				InteractionFragment o2 = interaction.getFragments().get(j);
-//				if(o1.getClass().equals(MessageOccurrenceSpecificationImpl.class) && o2.getClass().equals(MessageOccurrenceSpecificationImpl.class)){
-//					PrimSig s1 = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + o1.getName());
-//					PrimSig s2 = (PrimSig) AlloyModel.getInstance().getSigByName(AlloyModel.getInstance().getSD_prefix() + o2.getName());
-//					Expr fact = s1.in(s2.join(s2.parent.getFields().get(0)));
-//					AlloyModel.getInstance().addFact(fact);
-//				}
-//				// todo 5th Aug
-//				
-////				if(o1.getClass().equals(CombinedFragmentImpl.class) && o2.getClass().equals(MessageOccurrenceSpecificationImpl.class)){
-////					CombinedFragmentImpl cf1 = (CombinedFragmentImpl) o1;
-////					if(cf1.getInteractionOperator() == InteractionOperatorKind.ALT_LITERAL){
-////						
-////					}
-////				}
-//				
-//				//fact1 += String.format("%s in %s.isBefore\n", interaction.getFragments().get(j).getName(), interaction.getFragments().get(i).getName());
-//			}
-//		}
-		
-		return null;
-		
-//		String alloyString = "";
-//		
-//		// flag of appearances of three basic type, for the purpose of generate Abstract
-//		int[] flag = new int[3];
-//		
-//		// generate the interaction
-//		alloyString += "one sig SD_Merged {";
-//		Interaction interaction = (Interaction) source;
-//		int count = 1;
-//		for (Element element : interaction.getOwnedElements()) {
-//			if(element instanceof LifelineImpl){
-//				flag[0]=1;
-//				if(count != 1)alloyString += ", ";
-//				alloyString += String.format("L%d:%s", count++, ((LifelineImpl) element).getName());
-//			}
-//		}
-//		
-//		count = 1;
-//		for (Element element : interaction.getOwnedElements()) {
-//			if(element instanceof MessageImpl){
-//				flag[1]=1;
-//				alloyString += ", ";
-//				alloyString += String.format("M%d:%s", count++, ((MessageImpl) element).getName());
-//			}
-//		}
-//		
-//		count = 1;
-//		for (Element element : interaction.getOwnedElements()) {
-//			if(element instanceof CombinedFragmentImpl){
-//				flag[2]=1;
-//				alloyString += ", ";
-//				alloyString += String.format("alt%d:%s", count++, ((CombinedFragmentImpl) element).getName());
-//			}
-//		}
-//		alloyString += "}";
-//		
-//		// generate the abstract objects
-//		if(flag[0] == 1){
-//			alloyString += "\n\nabstract sig Lifeline {}";
-//		}
-//		if(flag[1] == 1){
-//			alloyString += "\nabstract sig Message {}";
-//			alloyString += "\nabstract sig EventOccurent {isBefore: set EventOccurent}";
-//		}
-//		if(flag[2] == 1){
-//			alloyString += "\nabstract sig CombinedFragment {}";
-//			alloyString += "\nabstract sig InteractionOperand {isafter: InteractionOperand}\n";
-//		}
-//		alloyString += "\n\n";
-//		
-//		// recursive to lower level members
-//		try {
-//			java.util.List<? extends Object> stringList = t.transformAll(interaction.getOwnedElements());
-//			for (Object object : stringList) {
-//				if(object != null)
-//				alloyString += object + "\n\n";
-//			}
-//		} catch (RuleNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		// generate the facts
-//		String fact1 = "fact{\n";
-//		String fact2 = "fact {no e:elem  |  e in e.^next}\n";
-//		count = 0;
-//		for (int i = 0; i < interaction.getAllOperations().size(); i++) {
-//			for (int j = i+1; j < interaction.getFragments().size(); j++) {
-//				count ++;
-//				fact1 += String.format("%s in %s.isBefore\n", interaction.getFragments().get(j).getName(), interaction.getFragments().get(i).getName());
-//			}
-//		}
-//		fact1 += "}\n";
-//		if(count > 0){
-//			alloyString += fact1;
-//			alloyString += fact2;
-//		}
-//		
-//		return alloyString;		
-		} catch (Err e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RuleNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 
+		try {
+			// add abstract for event
+			// abstract sig event{isbefore: set event}
+			ASig eventAbstract = AlloyModel.getInstance().getSig("EVENT");
+			eventAbstract.set_attr(AAttr.ABSTRACT);
+			eventAbstract.AddField("ISBEFORE", eventAbstract.setOf());
+			eventAbstract.zone = "abstract";
+			
+			// add abstract for InteractionOperand
+			// abstract sig INTERACTIONOPERAND {}
+			ASig interactionOperandAbstract = AlloyModel.getInstance().getSig("INTERACTIONOPERAND");
+			interactionOperandAbstract.set_attr(AAttr.ABSTRACT);
+			interactionOperandAbstract.AddField("cov", eventAbstract.setOf());
+			interactionOperandAbstract.zone = "abstract";
+			
+			
+			// add sig for SD
+			ASig SD = AlloyModel.getInstance().getSig(currentSD);
+			SD.set_attr(AAttr.LONE);
+			SD.set_parent(interactionOperandAbstract);
+			SD.zone = "sd";
+			
+			ASig SD_merged = AlloyModel.getInstance().getSig("_SD_");
+			SD_merged.set_attr(AAttr.ONE);
+			SD_merged.set_parent(interactionOperandAbstract);
+			SD_merged.zone = "sd";
+			
+			AlloyModel.getInstance().addFact(String.format("# %s = 0", SD.get_name())).zone = "hidden";
+			SD.mergeTo(SD_merged);
+			
+			// add facts
+			// for every message M(j) after M(i) {
+			ArrayList<Message> messages = new ArrayList<Message>();
+			for (InteractionFragment interactionFragment : interaction.getFragments()) {
+				if(interactionFragment instanceof MessageOccurrenceSpecification){
+					MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
+					if(!messages.contains(event.getMessage())){
+						t.transform(event.getMessage());
+						messages.add(event.getMessage());
+					}
+					// event that covered by interaction
+					ASig eventSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
+					AlloyModel.getInstance().addFact("%s in %s.cov", eventSig, SD).zone = "cover";
+				}
+			}
+			for (int i = 0; i < messages.size() - 1; i++) {
+				Message message1 = messages.get(i);
+				for (int j = i+1; j < messages.size(); j++) {
+					Message message2 = messages.get(j);
+					MessageOccurrenceSpecification m1send = (MessageOccurrenceSpecification) message1.getSendEvent();
+					MessageOccurrenceSpecification m1rec = (MessageOccurrenceSpecification) message1.getReceiveEvent();
+					MessageOccurrenceSpecification m2send = (MessageOccurrenceSpecification) message2.getSendEvent();
+					MessageOccurrenceSpecification m2rec = (MessageOccurrenceSpecification) message2.getReceiveEvent();
+					
+					ASig m1sendASig = AlloyModel.getInstance().getSig(currentSD_ + m1send.getName());
+					ASig m1recASig = AlloyModel.getInstance().getSig(currentSD_ + m1rec.getName());
+					ASig m2sendASig = AlloyModel.getInstance().getSig(currentSD_ + m2send.getName());
+					ASig m2recASig = AlloyModel.getInstance().getSig(currentSD_ + m2rec.getName());
+					
+					if(j == i + 1){
+						AlloyModel.getInstance().addFact("%s in %s.ISBEFORE", m2sendASig, m1sendASig).zone = "order";
+						AlloyModel.getInstance().addFact("%s in %s.ISBEFORE", m2recASig, m1recASig).zone = "order";
+					}
+					AlloyModel.getInstance().addFact("%s !in %s.ISBEFORE", m2sendASig, m1recASig).zone = "order";
+					AlloyModel.getInstance().addFact("%s !in %s.ISBEFORE", m1recASig, m2sendASig).zone = "order";
+				}						
+			}
+		} catch (RuleNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

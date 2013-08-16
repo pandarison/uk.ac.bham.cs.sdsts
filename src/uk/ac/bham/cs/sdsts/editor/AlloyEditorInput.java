@@ -20,6 +20,7 @@ public class AlloyEditorInput implements IEditorInput{
 	public String getCodeString(){
 		return codeString;
 	}
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub

@@ -210,7 +210,8 @@ public class CallOpenAlloyViz extends AbstractHandler {
 	        /** Level 2. */  DEBUG("2", "high"),
 	        /** Level 3. */  FULLDEBUG("3", "debug only");
 	        /** Returns true if it is greater than or equal to "other". */
-	        public boolean geq(Verbosity other) { return ordinal() >= other.ordinal(); }
+	        @SuppressWarnings("unused")
+			public boolean geq(Verbosity other) { return ordinal() >= other.ordinal(); }
 	        /** This is a unique String for this value; it should be kept consistent in future versions. */
 	        private final String id;
 	        /** This is the label that the toString() method will return. */
@@ -225,7 +226,8 @@ public class CallOpenAlloyViz extends AbstractHandler {
 	        /** Returns the human-readable label for this enum value. */
 	        @Override public final String toString() { return label; }
 	        /** Saves this value into the Java preference object. */
-	        private void set() { Preferences.userNodeForPackage(Util.class).put("Verbosity",id); }
+	        @SuppressWarnings("unused")
+			private void set() { Preferences.userNodeForPackage(Util.class).put("Verbosity",id); }
 	        /** Reads the current value of the Java preference object (if it's not set, then return DEFAULT). */
 	        private static Verbosity get() { return parse(Preferences.userNodeForPackage(Util.class).get("Verbosity","")); }
 	    };

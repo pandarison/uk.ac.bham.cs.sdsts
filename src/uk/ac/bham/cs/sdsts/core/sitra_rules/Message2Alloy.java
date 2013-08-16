@@ -13,6 +13,8 @@ import edu.mit.csail.sdg.alloy4compiler.ast.Attr;
 import edu.mit.csail.sdg.alloy4compiler.ast.Expr;
 import edu.mit.csail.sdg.alloy4compiler.ast.Sig.PrimSig;
 
+import uk.ac.bham.cs.sdsts.Alloy.AAttr;
+import uk.ac.bham.cs.sdsts.Alloy.ASig;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.sitra.Rule;
 import uk.ac.bham.sitra.RuleNotFoundException;
@@ -30,79 +32,63 @@ public class Message2Alloy implements Rule{
 
 	@Override
 	public Object build(Object source, Transformer t) {
-		try {
-			Message message = (Message) source;
-			
-			// add abstract for Message
-			// abstract sig MESSAGE {}
-			PrimSig message_abstract = new PrimSig("MESSAGE", Attr.ABSTRACT);
-			message_abstract = (PrimSig) AlloyModel.getInstance().addAbstract(message_abstract);
-			
-			// add abstract for event
-			// one sig abstract event{isbefore: set event}
-			PrimSig event_abstract = new PrimSig("EVENT", Attr.ABSTRACT);
-			event_abstract.addField("ISBEFORE", event_abstract.setOf());
-			event_abstract = (PrimSig) AlloyModel.getInstance().addAbstract(event_abstract);
-			
-			
-			// add sender and receiver events
-			// one sig senderName extends event{occur : LL}
-			MessageOccurrenceSpecification mFrom = (MessageOccurrenceSpecification) message.getSendEvent();
-			MessageOccurrenceSpecification mTo = (MessageOccurrenceSpecification) message.getReceiveEvent();
-			// if the message is inside an operand, use the get
-			Element teElement = mFrom.getOwner();
-			t.transform(mFrom.getCovered(null));
-			t.transform(mTo.getCovered(null));
-			String lifelineFrom = AlloyModel.getInstance().getName(AlloyModel.getInstance().getSD_prefix() + mFrom.getCovered(null).getName());
-			String lifelineTo = AlloyModel.getInstance().getName(AlloyModel.getInstance().getSD_prefix() + mTo.getCovered(null).getName());
-			PrimSig event_send = new PrimSig(AlloyModel.getInstance().getSD_prefix() + mFrom.getName(), event_abstract, Attr.ONE);
-			PrimSig event_receive = new PrimSig(AlloyModel.getInstance().getSD_prefix() + mTo.getName(), event_abstract, Attr.ONE);
-			
-			event_send.addField("occur", (Expr) AlloyModel.getInstance().getSigByName(lifelineFrom));
-			event_receive.addField("occur", (Expr) AlloyModel.getInstance().getSigByName(lifelineTo));
-			AlloyModel.getInstance().addSig(event_receive);
-			AlloyModel.getInstance().addSig(event_send);
-			
-			// add the fact send is before receive
-			//Expr fact = event_send.in(event_receive.join(event_receive.parent.getFields().get(0))).not();
-			Expr fact1 = event_receive.in(event_send.join(event_send.parent.getFields().get(0)));
-			//AlloyModel.getInstance().addFact(fact);
-			AlloyModel.getInstance().addFact(fact1);
-			
-			// add the name
-			// one sig name{}
-			PrimSig message_name = new PrimSig("NAME_" + message.getName(), Attr.ONE);
-			AlloyModel.getInstance().addSig(message_name);
-			
-			// add the message
-			PrimSig message_sig = new PrimSig(AlloyModel.getInstance().getMessageID(message.getName()), message_abstract, Attr.ONE);
-			message_sig.addField("send", event_send);
-			message_sig.addField("receive", event_receive);
-			message_sig.addField("name", message_name);
-			AlloyModel.getInstance().addSig(message_sig);
-						
-		} catch (Err e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RuleNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Message message = (Message) source;
+		String currentSD = AlloyModel.getInstance().getSD();
+		String currentSD_ = currentSD + "_";
+		
+		// add abstract for Message
+		// abstract sig MESSAGE {}
+		ASig messageAbstract = AlloyModel.getInstance().getSig("MESSAGE");
+		messageAbstract.set_attr(AAttr.ABSTRACT);
+		messageAbstract.zone = "abstract";
+		
+		// add abstract for event
+		// one sig abstract event{isbefore: set event}
+		ASig eventAbstract = AlloyModel.getInstance().getSig("EVENT");
+		eventAbstract.set_attr(AAttr.ABSTRACT);
+		eventAbstract.AddField("ISBEFORE", eventAbstract.setOf());	
+		eventAbstract.zone = "abstract";
+		
+		// add fact to avoid circle
+		AlloyModel.getInstance().addFact("\n//avoid the circle\nfact {all e:EVENT  | e !in e.^ISBEFORE}").zone = "other";
+		AlloyModel.getInstance().addFact("\n//no event can be direct child and subChild of other event at the same time\nfact {no _E: EVENT, _E1: EVENT | _E in _E1.ISBEFORE.^ISBEFORE and _E in _E1.ISBEFORE}");
+		
+		// add sender and receiver events
+		// one sig senderName extends event{occur : LL}
+		MessageOccurrenceSpecification mFrom = (MessageOccurrenceSpecification) message.getSendEvent();
+		MessageOccurrenceSpecification mTo = (MessageOccurrenceSpecification) message.getReceiveEvent();
+		String lifelineFrom = currentSD_ + mFrom.getCovered(null).getName().split(":")[0];
+		String lifelineTo = currentSD_ + mTo.getCovered(null).getName().split(":")[0];
+		ASig eventSendSig = AlloyModel.getInstance().getSig(currentSD_ + mFrom.getName());
+		eventSendSig.set_attr(AAttr.ONE);
+		eventSendSig.set_parent(eventAbstract);
+		eventSendSig.AddField("occur", AlloyModel.getInstance().getSig(lifelineFrom));
+		eventSendSig.zone = "event";
+		ASig eventRecSig = AlloyModel.getInstance().getSig(currentSD_ + mTo.getName());
+		eventRecSig.set_attr(AAttr.ONE);
+		eventRecSig.set_parent(eventAbstract);
+		eventRecSig.AddField("occur", AlloyModel.getInstance().getSig(lifelineTo));
+		eventRecSig.zone = "event";
+		
+		// add the fact send is before receive
+		//Expr fact = event_send.in(event_receive.join(event_receive.parent.getFields().get(0))).not();
+		AlloyModel.getInstance().addFact("%s in %s.ISBEFORE", eventRecSig, eventSendSig).zone = "order";
+		
+		// add the name
+		// one sig name{}
+		ASig messageName = AlloyModel.getInstance().getSig("NAME_" + message.getName());
+		messageName.set_attr(AAttr.ONE);
+		messageName.zone = "name";
+		
+		// add the message
+		ASig messageSig = AlloyModel.getInstance().getSig(currentSD_ + message.getName());
+		messageSig.set_attr(AAttr.ONE);
+		messageSig.set_parent(messageAbstract);
+		messageSig.AddField("send", eventSendSig);
+		messageSig.AddField("receive", eventRecSig);
+		messageSig.AddField("name", messageName);
+		messageSig.zone = "message";
 		return null;
-//		String alloyString = "";
-//		Message message = (Message) source;
-//		alloyString += "one sig ";
-//		alloyString += message.getName();
-//		alloyString += " extends Message ";
-//		alloyString += String.format("{send:%s receive:%s}", message.getSendEvent().getName(), message.getReceiveEvent().getName());
-//		
-//		MessageOccurrenceSpecification mFrom = (MessageOccurrenceSpecification) message.getSendEvent();
-//		MessageOccurrenceSpecification mTo = (MessageOccurrenceSpecification) message.getReceiveEvent();
-//		//one sig Event1 extends EventOccurent{from: LifeLine_A}
-//		alloyString += String.format("\none sig %s extends EventOccurent {from: %s}", mFrom.getName(), mFrom.getCovered(null).getName());
-//		alloyString += String.format("\none sig %s extends EventOccurent {to: %s}", mTo.getName(), mTo.getCovered(null).getName());
-//
-//		return alloyString;
 	}
 
 	@Override

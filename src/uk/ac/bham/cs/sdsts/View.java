@@ -76,10 +76,6 @@ public class View extends ViewPart {
 		});
 		viewer.getControl().setMenu(mgr.createContextMenu(viewer.getControl()));
 	}
-	public void fillContextMenu(IMenuManager manager){
-		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-        Model model = (Model)selection.getFirstElement();
-	}
 	private void hookDoubleClickCommand() {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {

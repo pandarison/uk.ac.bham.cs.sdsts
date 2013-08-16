@@ -34,7 +34,7 @@ import uk.ac.bham.cs.sdsts.common.ModelManager;
 import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
 
 
-@SuppressWarnings({ "deprecation", "deprecation" })
+@SuppressWarnings({ "deprecation" })
 public class CallCreateSdFile extends AbstractHandler{
 
 	@Override

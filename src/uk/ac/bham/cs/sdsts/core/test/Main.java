@@ -1,10 +1,8 @@
 package uk.ac.bham.cs.sdsts.core.test;
 
 import org.eclipse.uml2.uml.Element;
-import org.eclipse.uml2.uml.Model;
-
-import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
-import uk.ac.bham.cs.sdsts.core.synthesis.Xml2obj;
+import uk.ac.bham.cs.sdsts.Alloy.AAttr;
+import uk.ac.bham.cs.sdsts.Alloy.ASig;
 
 public class Main {
 
@@ -16,13 +14,20 @@ public class Main {
 			test1();
 	}
 	public static void test1(){
+		ASig sig = new ASig("good", AAttr.ONE, null);
+		ASig sig1 = new ASig("bad", AAttr.ONE, sig);
+		sig1.AddField("f1", sig1);
+		sig1.AddField("f2", sig1);
+		sig1.mergeTo(sig);
+		System.out.println(sig);
+		System.out.println(sig1);
 
-		Model model = Xml2obj.load("/Users/chenyi/Documents/workspace/SdSts/resource/model2.uml");
-		Model model2 = Xml2obj.load("/Users/chenyi/Documents/workspace/SdSts/resource/model3.uml");
-		AlloyModel.getInstance().addModel(model, "SD1");
-		AlloyModel.getInstance().addModel(model2, "SD2");
-		AlloyModel.getInstance().getResult();
-		
+//		Model model = Xml2obj.load("/Users/chenyi/Documents/workspace/SdSts/resource/model2.uml");
+//		Model model2 = Xml2obj.load("/Users/chenyi/Documents/workspace/SdSts/resource/model3.uml");
+//		AlloyModel.getInstance().addModel(model, "SD1");
+//		AlloyModel.getInstance().addModel(model2, "SD2");
+//		AlloyModel.getInstance().getResult();
+//		
 		
 		
 		

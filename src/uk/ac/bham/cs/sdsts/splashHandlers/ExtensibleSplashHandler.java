@@ -22,6 +22,7 @@ import org.eclipse.ui.splash.AbstractSplashHandler;
  * @since 3.3
  *
  */
+@SuppressWarnings("rawtypes")
 public class ExtensibleSplashHandler extends AbstractSplashHandler {
 	
 	private ArrayList fImageList;
@@ -216,6 +217,7 @@ public class ExtensibleSplashHandler extends AbstractSplashHandler {
 	/**
 	 * @param configurationElement
 	 */
+	@SuppressWarnings("unchecked")
 	private void processSplashElementTooltip(
 			IConfigurationElement configurationElement) {
 		// Get attribute tooltip
@@ -232,6 +234,7 @@ public class ExtensibleSplashHandler extends AbstractSplashHandler {
 	/**
 	 * @param configurationElement
 	 */
+	@SuppressWarnings("unchecked")
 	private void processSplashElementIcon(
 			IConfigurationElement configurationElement) {
 		// Get attribute icon
