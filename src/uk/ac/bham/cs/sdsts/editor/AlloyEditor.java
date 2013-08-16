@@ -10,6 +10,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -61,12 +63,12 @@ public class AlloyEditor extends EditorPart {
 	    parent.setLayout(new FillLayout());
 
 	    text = new StyledText(parent, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI | SWT.WRAP);
+	    
 	    text.setEditable(true);
 	    text.setEnabled(true);
 	    text.setText(input.getCodeString());
 	    
 	    text.addModifyListener(new ModifyListener() {
-			
 			@Override
 			public void modifyText(ModifyEvent e) {
 				Color blue = Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
@@ -81,16 +83,23 @@ public class AlloyEditor extends EditorPart {
 	    //text.setStyleRange(range);
 
 	}
-	private String getText1(){
-		return text.getText();
+	private StyledText getText1(){
+		return text;
 	}
 	public static String getText(){
 		IEditorPart editor1 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		if(editor1 instanceof AlloyEditor){
 			AlloyEditor editor = (AlloyEditor) editor1;
-			return editor.getText1();
+			return editor.getText1().getText();
 		}
 		return "";
+	}
+	public static void selectAll(){
+		IEditorPart editor1 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		if(editor1 instanceof AlloyEditor){
+			AlloyEditor editor = (AlloyEditor) editor1;
+			editor.getText1().selectAll();
+		}
 	}
 	private void coloraLineColumn1(int line, int start, int end){
 		line--;

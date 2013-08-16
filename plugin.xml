@@ -71,6 +71,11 @@
                   label="Save"
                   style="push">
             </command>
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.selectAll"
+                  label="Select all"
+                  style="push">
+            </command>
          </menu>
          <menu
                label="Tool">
@@ -163,6 +168,11 @@
             id="uk.ac.bham.cs.sdsts.OpenAlloyEditor"
             name="Open Alloy Editor">
       </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallSelectAll"
+            id="uk.ac.bham.cs.sdsts.selectAll"
+            name="Select All">
+      </command>
    </extension>
    
    
@@ -253,12 +263,17 @@
       <key
             commandId="uk.ac.bham.cs.sdsts.doSave"
             schemeId="uk.ac.bham.cs.sdsts.scheme1"
-            sequence="M4+S">
+            sequence="M1+S">
       </key>
       <scheme
             id="uk.ac.bham.cs.sdsts.scheme1"
             name="uk.ac.bham.cs.sdsts.scheme1">
       </scheme>
+      <key
+            commandId="uk.ac.bham.cs.sdsts.selectAll"
+            schemeId="uk.ac.bham.cs.sdsts.scheme1"
+            sequence="M1+A">
+      </key>
    </extension>
 <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

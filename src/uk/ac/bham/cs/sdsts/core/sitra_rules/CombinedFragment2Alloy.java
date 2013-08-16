@@ -55,6 +55,7 @@ public class CombinedFragment2Alloy implements Rule {
 			// one sig SDid_CFname {op1:operand1, op2:operand2 ...}
 			ASig combinedFragmentSig = AlloyModel.getInstance().getSig(currentSD_ + combinedFragment.getName());
 			combinedFragmentSig.AddField("type", cfType);
+			combinedFragmentSig.set_parent(combinedFragmentAbstract);
 			combinedFragmentSig.zone = "combinedFragment";
 			int i = 1;
 			for (InteractionOperand interactionOperand : combinedFragment.getOperands()) {
