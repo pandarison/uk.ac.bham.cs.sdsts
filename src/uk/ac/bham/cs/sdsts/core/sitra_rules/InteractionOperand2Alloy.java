@@ -65,6 +65,7 @@ public class InteractionOperand2Alloy implements Rule {
 					}
 					// event that covered by interaction
 					ASig eventSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
+					eventSig.set_name(interactionOperandSig + "_" + event);
 					AlloyModel.getInstance().addFact("%s in %s.cov", eventSig, interactionOperandSig).zone = "cover"; 
 				}
 			}
