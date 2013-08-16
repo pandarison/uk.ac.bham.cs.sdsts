@@ -59,13 +59,13 @@ public class InteractionOperand2Alloy implements Rule {
 			for (InteractionFragment interactionFragment : interactionOperand.getFragments()) {
 				if(interactionFragment instanceof MessageOccurrenceSpecification){
 					MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
+					event.setName(interactionOperand.getName() + "_" +event.getName());
 					if(!messages.contains(event.getMessage())){
 						t.transform(event.getMessage());
 						messages.add(event.getMessage());
 					}
 					// event that covered by interaction
-					ASig eventSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
-					eventSig.set_name(interactionOperandSig + "_" + event);
+					ASig eventSig = AlloyModel.getInstance().getSig(currentSD_  + interactionFragment.getName());
 					AlloyModel.getInstance().addFact("%s in %s.cov", eventSig, interactionOperandSig).zone = "cover"; 
 				}
 			}
