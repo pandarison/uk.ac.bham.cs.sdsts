@@ -59,8 +59,9 @@ public class InteractionOperand2Alloy implements Rule {
 			for (InteractionFragment interactionFragment : interactionOperand.getFragments()) {
 				if(interactionFragment instanceof MessageOccurrenceSpecification){
 					MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
-					event.setName(interactionOperand.getName() + "_" +event.getName());
 					if(!messages.contains(event.getMessage())){
+						event.getMessage().getSendEvent().setName(interactionOperand.getName() + "_" +event.getMessage().getSendEvent().getName());
+						event.getMessage().getReceiveEvent().setName(interactionOperand.getName() + "_" +event.getMessage().getReceiveEvent().getName());
 						t.transform(event.getMessage());
 						messages.add(event.getMessage());
 					}
