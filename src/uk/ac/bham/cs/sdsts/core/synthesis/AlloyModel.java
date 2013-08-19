@@ -70,62 +70,45 @@ public class AlloyModel {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public String toResult(String filter, HashMap data){
-		String string = "";
+	public String toResult(String filter, HashMap data, boolean print_fact){
+		String string = printTitle(filter);
+		if(print_fact)string += "fact{\n";
 		for (Object object : data.values()) {
 			if(((AObject)object).zone.equals(filter))
 				string += object.toString() + "\n";
 		}
+		if(print_fact)string += "}\n";
+		string += "\n\n";
 		return string;
 	}
-	
+	private static String printTitle(String title){
+		String string = String.format("/**\n***  %s\n**/\n", title);
+		return string;
+	}
 	public String getResult(){
-		String string = "// Abstract sigs\n";
-		string += toResult("abstract", _sigs);
-		
-		string += "\n// SDs\n";
-		string += toResult("sd", _sigs);
-		
-		string += "\n// Names\n";
-		string += toResult("name", _sigs);
-		
-		string += "\n// Classes\n";
-		string += toResult("class", _sigs);
-		
-		string += "\n// Lifelines\n";
-		string += toResult("lifeline", _sigs);
-		
-		string += "\n// Messages\n";
-		string += toResult("message", _sigs);
-		
-		string += "\n// Operands\n";
-		string += toResult("operand", _sigs);
-		
-		string += "\n// Combined Fragments\n";
-		string += toResult("combinedFragment", _sigs);
-		
-		string += "\n// Events\n";
-		string += toResult("event", _sigs);
-		
-		string += "\n// Covering\nfact{\n";
-		string += toResult("cover", _facts);
-		string += "}\n";
-		
-		string += "\n// Orders\nfact{\n";
-		string += toResult("order", _facts);
-		string += "}\n";
-		
-		string += "\n// Hidden the merged objects\nfact{\n";
-		string += toResult("hidden", _facts);
-		string += "}\n";
-		
-		string += "\n// Remove the relation among operands in the same combined fragment Alt\nfact{\n";
-		string += toResult("cf_alt_relation_removal", _facts);
-		string += "}\n";
-		
-		string += "\n// Other\n";
-		string += toResult("other", _facts);
-		
+		String string = "";
+		string += toResult("Abstract", _sigs, false);
+		string += toResult("Combined Fragment Type", _sigs, false);
+		string += toResult("SD", _sigs, false);
+		string += toResult("Names", _sigs, false);
+		string += toResult("Classes", _sigs, false);
+		string += toResult("Lifeline", _sigs, false);
+		string += toResult("Combined Fragment", _sigs, false);
+		string += toResult("Operand", _sigs, false);
+		string += toResult("Message", _sigs, false);
+		string += toResult("Event", _sigs, false);
+		string += toResult("Combined Fragment Type Binding", _facts, true);
+		string += toResult("Covering: Combined Fragment->Operand", _facts, true);
+		string += toResult("Covering: Operand->Message", _facts, true);
+		string += toResult("Binding: Message->Event", _facts, true);
+		string += toResult("Covering: Event->Lifeline", _facts, true);
+		string += toResult("CF_Alt: Message->Operand", _facts, true);
+		string += toResult("Ordering", _facts, true);
+		string += toResult("Glue", _facts, true);
+		string += toResult("relation between Operand and Combined Fragment", _facts, false);
+		string += toResult("relation between Message and Operand", _facts, false);
+		string += toResult("relation among Messages", _facts, false);
+		string += toResult("Avoid circle in events", _facts, false);
 		string += "run{}\n";
 		
 		return string;
@@ -150,7 +133,9 @@ public class AlloyModel {
 
 			// add fact
 			// all SD1L:SD1_Lifeline_1 , SD2L:SD2_Lifeline_2 | SD1L.name = SD2L.name && SD1L.type = SD2L.type
-			AlloyModel.getInstance().addFact(String.format("# %s = 0", lifeline2Sig.get_name())).zone = "hidden";
+			String fact = String.format("all SD1L:%s , SD2L:%s | (SD1L.NAME = SD2L.NAME && SD1L.CLASS = SD2L.CLASS) => # SD2L = 0", lifeline1Sig.get_name(), lifeline2Sig.get_name());
+			this.addFact(fact).zone = "Glue";
+			//AlloyModel.getInstance().addFact(String.format("# %s = 0", lifeline2Sig.get_name())).zone = "hidden";
 			
 			lifeline2Sig.mergeTo(lifeline1Sig);
 		} catch (Exception e) {
@@ -168,15 +153,15 @@ public class AlloyModel {
 		ASig message1Sig = this.getSig(message1);
 		ASig message2Sig = this.getSig(message2);
 		
-		ASig message1SendSig = (ASig) message1Sig.get_fields().get("send");
-		ASig message1RecSig = (ASig) message1Sig.get_fields().get("receive");
-		ASig message2SendSig = (ASig) message2Sig.get_fields().get("send");
-		ASig message2RecSig = (ASig) message2Sig.get_fields().get("receive");
+		ASig message1SendSig = (ASig) message1Sig.getNote("SEND");
+		ASig message1RecSig = (ASig) message1Sig.getNote("RECEIVE");
+		ASig message2SendSig = (ASig) message2Sig.getNote("SEND");
+		ASig message2RecSig = (ASig) message2Sig.getNote("RECEIVE");
 		
-		ASig message1SendLifelineSig = (ASig) message1SendSig.get_fields().get("occur");
-		ASig message1RecLifelineSig = (ASig) message1RecSig.get_fields().get("occur");
-		ASig message2SendLifelineSig = (ASig) message2SendSig.get_fields().get("occur");
-		ASig message2RecLifelineSig = (ASig) message2RecSig.get_fields().get("occur");
+		ASig message1SendLifelineSig = (ASig) message1SendSig.getNote("COVER");
+		ASig message1RecLifelineSig = (ASig) message1RecSig.getNote("COVER");
+		ASig message2SendLifelineSig = (ASig) message2SendSig.getNote("COVER");
+		ASig message2RecLifelineSig = (ASig) message2RecSig.getNote("COVER");
 		
 
 		// the from/to life lines do not match
@@ -194,9 +179,13 @@ public class AlloyModel {
 		message2SendSig.set_attr(AAttr.LONE);
 		message2RecSig.set_attr(AAttr.LONE);
 		
-		this.addFact(String.format("# %s = 0", message2Sig.get_name())).zone = "hidden";
-		this.addFact(String.format("# %s = 0", message2SendSig.get_name())).zone = "hidden";
-		this.addFact(String.format("# %s = 0", message2RecSig.get_name())).zone = "hidden";
+		this.addFact(String.format("all SD1M:%s , SD2M:%s | (SD1M.NAME = SD2M.NAME) => # SD2M = 0", message1Sig.get_name(), message2Sig.get_name())).zone = "Glue";
+		this.addFact(String.format("# %s = 0", message2SendSig.get_name())).zone = "Glue";
+		this.addFact(String.format("# %s = 0", message2RecSig.get_name())).zone = "Glue";
+		
+//		this.addFact(String.format("# %s = 0", message2Sig.get_name())).zone = "hidden";
+//		this.addFact(String.format("# %s = 0", message2SendSig.get_name())).zone = "hidden";
+//		this.addFact(String.format("# %s = 0", message2RecSig.get_name())).zone = "hidden";
 		
 		message2Sig.mergeTo(message1Sig);
 		message2SendSig.mergeTo(message1SendSig);
@@ -207,7 +196,7 @@ public class AlloyModel {
 		Object lObject = _sigs.get(lName), rObject = _sigs.get(rName);
 		if(lObject != null && rObject != null){
 			ASig sig1 = (ASig) lObject;
-			if(sig1.get_fields().size() == 3)
+			if(sig1.get_fields().size() == 1)
 				this.addEqMessage(lName, rName);
 			if(sig1.get_fields().size() == 2)
 				this.addEqLifeline(lName, rName);

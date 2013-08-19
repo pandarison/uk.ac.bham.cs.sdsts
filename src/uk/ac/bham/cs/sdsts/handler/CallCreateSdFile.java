@@ -42,14 +42,14 @@ public class CallCreateSdFile extends AbstractHandler{
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
 	    IWorkbenchPage page = window.getActivePage();
 	    View view = (View) page.findView(View.ID);
-	    
+	    view.getViewer().refresh();
 	    FileDialog filedlg = new FileDialog(window.getShell(), SWT.SAVE);
 		filedlg.setText("Create Equality File");
 		filedlg.setFilterPath("SystemRoot");
 		filedlg.setFilterExtensions(new String[]{"di"});
 		String selected=filedlg.open();
 		MyCreater myCreater = new MyCreater();
-		myCreater.init(window.getWorkbench(), (IStructuredSelection) page.getSelection());
+		myCreater.init(window.getWorkbench(), (IStructuredSelection) window.getSelectionService().getSelection());
 		IFile iFile = myCreater.create(selected);
 		
 		SequenceDiagram sdDiagram = new SequenceDiagram();

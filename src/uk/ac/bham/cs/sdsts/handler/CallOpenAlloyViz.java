@@ -19,6 +19,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import uk.ac.bham.cs.sdsts.SDConsole;
 import uk.ac.bham.cs.sdsts.editor.AlloyEditor;
 
@@ -28,6 +30,7 @@ import edu.mit.csail.sdg.alloy4.Err;
 import edu.mit.csail.sdg.alloy4.ErrorFatal;
 import edu.mit.csail.sdg.alloy4.ErrorType;
 import edu.mit.csail.sdg.alloy4.ErrorWarning;
+import edu.mit.csail.sdg.alloy4.OurDialog;
 import edu.mit.csail.sdg.alloy4.Util;
 import edu.mit.csail.sdg.alloy4.Version;
 import edu.mit.csail.sdg.alloy4.XMLNode;
@@ -57,6 +60,7 @@ public class CallOpenAlloyViz extends AbstractHandler {
 		try {
 			String result = AlloyEditor.getText();
 			IWorkspace ws = ResourcesPlugin.getWorkspace();
+			parent_shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			IProject project = ws.getRoot().getProject("tmp");
 			if (!project.exists())
 				try {
@@ -89,10 +93,11 @@ public class CallOpenAlloyViz extends AbstractHandler {
 		}
 		return null;
 	}
+	public static Shell parent_shell = null;
+	public static A4Solution ans = null;
+	public static VizGUI viz = null;
 	public static void openAlloyWiz(String[] args) throws Err {
 
-        // The visualizer (We will initialize it to nonnull when we visualize an Alloy solution)
-        VizGUI viz = null;
 
         // Alloy4 sends diagnostic messages and progress reports to the A4Reporter.
         // By default, the A4Reporter ignores all these events (but you can extend the A4Reporter to display the event for the user)
@@ -131,7 +136,7 @@ public class CallOpenAlloyViz extends AbstractHandler {
             for (Command command: world.getAllCommands()) {
                 // Execute the command
                 //System.out.println("============ Command "+command+": ============");
-                A4Solution ans = TranslateAlloyToKodkod.execute_command(rep, world.getAllReachableSigs(), command, options);
+                ans = TranslateAlloyToKodkod.execute_command(rep, world.getAllReachableSigs(), command, options);
                 // Print the outcome
                 //System.out.println(ans);
                 SDConsole.print_has_time(ans.toString());
@@ -142,6 +147,7 @@ public class CallOpenAlloyViz extends AbstractHandler {
                     //
                     // You can also write the outcome to an XML file
                     ans.writeXML("alloy_example_output.xml");
+                    
                     //
                     // You can then visualize the XML file by calling this:
                     if (viz==null) {
@@ -149,8 +155,14 @@ public class CallOpenAlloyViz extends AbstractHandler {
 							
 							@Override
 							public String compute(Object input) throws Exception {
-								// TODO Auto-generated method stub
-								return null;
+								ans = ans.next();
+								if(ans.satisfiable() == false){
+										OurDialog.alert("No more satisfying instances.");
+										return null;
+								}
+								ans.writeXML("alloy_example_output.xml");
+								viz.loadXML("alloy_example_output.xml", true);
+								return (String) input;
 							}
 						}, evaluator);
                         //viz = new VizGUI(false, "alloy_example_output.xml", null);
@@ -260,5 +272,4 @@ public class CallOpenAlloyViz extends AbstractHandler {
 	        }
 	        return SimTupleset.make(list);
 	    }
-
 }

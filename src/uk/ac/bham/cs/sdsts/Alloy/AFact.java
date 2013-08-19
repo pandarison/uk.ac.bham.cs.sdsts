@@ -15,7 +15,7 @@ public class AFact extends AObject{
 	public String toString() {
 		ArrayList<String> args1 = new ArrayList<String>();
 		for (Object object : args) {
-			args1.add(((AObject)object).getAName());
+			args1.add(((AObject)object).getName());
 		}
 		return String.format(format, args1.toArray());
 	}
@@ -23,5 +23,10 @@ public class AFact extends AObject{
 	@Override
 	public String getAName() {
 		return toString();
+	}
+
+	@Override
+	public String getName() {
+		return null;
 	}
 }

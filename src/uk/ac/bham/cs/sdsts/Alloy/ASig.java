@@ -16,9 +16,10 @@ public class ASig extends AObject{
 	// Fields of the signature
 	private HashMap<String, AObject> _fields;
 	
-	public void AddField(String label, AObject object){
+	public ASig AddField(String label, AObject object){
 		if(!_fields.containsKey(label) && object != null && label != null)
 			_fields.put(label, object);
+		return this;
 	}
 	
 	@Override
@@ -52,18 +53,27 @@ public class ASig extends AObject{
 	@Override
 	public String getAName(){
 		if(this == _this){
-			if(_attr == AAttr.SET)
-				return _attr + _name;
-			else return _name;
+			return _attr + _name;
 		}
 		else return ((ASig)_this).getAName();
 	}
 	public void mergeTo(ASig sig){
+		if(this.get_attr() == AAttr.LONE)sig.set_attr(AAttr.LONE);
 		this._this = sig;
 	}
 	public ASig setOf(){
 		ASig sig = new ASig(_name, _attr, _parent);
 		sig.set_attr(AAttr.SET);
+		return sig;
+	}
+	public ASig loneOf(){
+		ASig sig = new ASig(_name, _attr, _parent);
+		sig.set_attr(AAttr.LONE);
+		return sig;
+	}
+	public ASig oneOf(){
+		ASig sig = new ASig(_name, _attr, _parent);
+		sig.set_attr(AAttr.ONE);
 		return sig;
 	}
 
@@ -75,8 +85,9 @@ public class ASig extends AObject{
 		else return ((ASig)_this).get_name();
 	}
 
-	public void set_name(String _name) {
+	public ASig set_name(String _name) {
 		this._name = _name;
+		return this;
 	}
 
 	public AAttr get_attr() {
@@ -85,8 +96,9 @@ public class ASig extends AObject{
 		else return ((ASig)_this).get_attr();
 	}
 
-	public void set_attr(AAttr _attr) {
+	public ASig set_attr(AAttr _attr) {
 		this._attr = _attr;
+		return this;
 	}
 
 	public ASig get_parent() {
@@ -95,8 +107,9 @@ public class ASig extends AObject{
 		else return ((ASig)_this).get_parent();
 	}
 
-	public void set_parent(ASig _parent) {
+	public ASig set_parent(ASig _parent) {
 		this._parent = _parent;
+		return this;
 	}
 
 	public HashMap<String, AObject> get_fields() {
@@ -107,6 +120,11 @@ public class ASig extends AObject{
 
 	public void set_fields(HashMap<String, AObject> _fields) {
 		this._fields = _fields;
+	}
+
+	@Override
+	public String getName() {
+		return get_name();
 	}
 
 }

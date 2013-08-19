@@ -30,31 +30,23 @@ public class InteractionOperand2Alloy implements Rule {
 			InteractionOperand interactionOperand = (InteractionOperand) source;
 			String currentSD = AlloyModel.getInstance().getSD();
 			String currentSD_ = currentSD + "_";
-			// add abstract for event
-			// one sig abstract event{isbefore: set event}
-			ASig eventAbstract = AlloyModel.getInstance().getSig("EVENT");
-			eventAbstract.set_attr(AAttr.ABSTRACT);
-			eventAbstract.AddField("ISBEFORE", eventAbstract.setOf());	
-			eventAbstract.zone = "abstract";		
-			
+					
 			// add abstract for InteractionOperand
-			// abstract sig INTERACTIONOPERAND {}
-			ASig interactionOperandAbstract = AlloyModel.getInstance().getSig("INTERACTIONOPERAND");
+			// abstract sig OPERAND{COVER: set MESSAGE}
+			ASig messageAbstract = AlloyModel.getInstance().getSig("MESSAGE");
+			ASig interactionOperandAbstract = AlloyModel.getInstance().getSig("OPERAND");
 			interactionOperandAbstract.set_attr(AAttr.ABSTRACT);
-			interactionOperandAbstract.AddField("cov", eventAbstract.setOf());
-			interactionOperandAbstract.zone = "abstract";
-			
-			AlloyModel.getInstance().addFact("//all event can be covered by at most one operand\nfact{all _E:EVENT | lone _OP:INTERACTIONOPERAND | _E in _OP.cov}").zone = "other";
-			
+			interactionOperandAbstract.AddField("COVER", messageAbstract.setOf());
+			interactionOperandAbstract.zone = "Abstract";
+						
 			// add the interactionOperand
-			// one sig SDid_InteractionName extends INTERACTION {cover1: Message1, cover2: Message2 ...}
+			// one sig op1 extends OPERAND{}
 			ASig interactionOperandSig = AlloyModel.getInstance().getSig(currentSD_ + interactionOperand.getName());
 			interactionOperandSig.set_attr(AAttr.ONE);
 			interactionOperandSig.set_parent(interactionOperandAbstract);
-			interactionOperandSig.zone = "operand";
+			interactionOperandSig.zone = "Operand";
 			
-			// add facts
-			// for every message M(j) after M(i) {
+			// iterate messages
 			ArrayList<Message> messages = new ArrayList<Message>();
 			for (InteractionFragment interactionFragment : interactionOperand.getFragments()) {
 				if(interactionFragment instanceof MessageOccurrenceSpecification){
@@ -62,38 +54,26 @@ public class InteractionOperand2Alloy implements Rule {
 					if(!messages.contains(event.getMessage())){
 						event.getMessage().getSendEvent().setName(interactionOperand.getName() + "_" +event.getMessage().getSendEvent().getName());
 						event.getMessage().getReceiveEvent().setName(interactionOperand.getName() + "_" +event.getMessage().getReceiveEvent().getName());
-						//event.getMessage().setName(interactionOperand.getName() + "_" + event.getMessage().getName());
-						t.transform(event.getMessage());
 						messages.add(event.getMessage());
-					}
-					// event that covered by interaction
-					ASig eventSig = AlloyModel.getInstance().getSig(currentSD_  + interactionFragment.getName());
-					AlloyModel.getInstance().addFact("%s in %s.cov", eventSig, interactionOperandSig).zone = "cover"; 
+
+						// Fact: message covered by operand
+						ASig messageSig = (ASig) t.transform(event.getMessage());
+						AlloyModel.getInstance().addFact("%s in %s.COVER", messageSig, interactionOperandSig).zone = "Covering: Operand->Message";
+					}				 
 				}
 			}
 			for (int i = 0; i < messages.size() - 1; i++) {
 				Message message1 = messages.get(i);
-				for (int j = i+1; j < messages.size(); j++) {
-					Message message2 = messages.get(j);
-					MessageOccurrenceSpecification m1send = (MessageOccurrenceSpecification) message1.getSendEvent();
-					MessageOccurrenceSpecification m1rec = (MessageOccurrenceSpecification) message1.getReceiveEvent();
-					MessageOccurrenceSpecification m2send = (MessageOccurrenceSpecification) message2.getSendEvent();
-					MessageOccurrenceSpecification m2rec = (MessageOccurrenceSpecification) message2.getReceiveEvent();
-					
-					ASig m1sendASig = AlloyModel.getInstance().getSig(currentSD_ + m1send.getName());
-					ASig m1recASig = AlloyModel.getInstance().getSig(currentSD_ + m1rec.getName());
-					ASig m2sendASig = AlloyModel.getInstance().getSig(currentSD_ + m2send.getName());
-					ASig m2recASig = AlloyModel.getInstance().getSig(currentSD_ + m2rec.getName());
-					
-					if(j == i + 1){
-						AlloyModel.getInstance().addFact("%s in %s.ISBEFORE", m2sendASig, m1sendASig).zone = "order";
-						AlloyModel.getInstance().addFact("%s in %s.ISBEFORE", m2recASig, m1recASig).zone = "order";
-					}
-					AlloyModel.getInstance().addFact("%s !in %s.ISBEFORE", m2sendASig, m1recASig).zone = "order";
-					AlloyModel.getInstance().addFact("%s !in %s.ISBEFORE", m1recASig, m2sendASig).zone = "order";
-				}						
+				Message message2 = messages.get(i + 1);
+				ASig message1Sig = AlloyModel.getInstance().getSig(currentSD_ + message1.getName());
+				ASig message2Sig = AlloyModel.getInstance().getSig(currentSD_ + message2.getName());		
+				AlloyModel.getInstance().addFact("%s in %s.^BEFORE", message2Sig, message1Sig).zone = "Ordering";
 			}
 			
+			// Fact: in ONE operand, only one message can have child message outside the operand
+			AlloyModel.getInstance().addFact("// in ONE operand, only one message can have child message outside the operand\nfact{all _OP: OPERAND | lone _M: _OP.COVER | _M.BEFORE !in _OP.COVER or #_M.BEFORE=0}").zone = "relation between Message and Operand";
+			// all message can be covered by at most one operand
+			AlloyModel.getInstance().addFact("// all message can be covered by at most one operand\nfact{all _M: MESSAGE | lone _OP: OPERAND | _M in _OP.COVER}").zone = "relation between Message and Operand";
 			return interactionOperandSig;
 			
 		} catch (RuleNotFoundException e) {

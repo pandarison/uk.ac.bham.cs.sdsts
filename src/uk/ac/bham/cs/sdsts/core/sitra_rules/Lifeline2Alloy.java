@@ -28,11 +28,10 @@ public class Lifeline2Alloy implements Rule{
 		// add abstract for lifeline
 		// abstract sig LIFELINE {}
 		ASig lifelineAbstract = AlloyModel.getInstance().getSig("LIFELINE");
-		lifelineAbstract.set_attr(AAttr.ABSTRACT);
-		lifelineAbstract.zone = "abstract";
+		lifelineAbstract.set_attr(AAttr.ABSTRACT).zone = "Abstract";
 		
 		ASig SD = AlloyModel.getInstance().getSig("_SD_");
-		SD.AddField("LIFELINE", new AFact("_SD_ one -> LIFELINE"));
+		SD.AddField("LIFELINES", new AFact("_SD_ one -> LIFELINE"));
 		
 		// get the name and class
 		String[] fields = lifeline.getName().split(":");
@@ -42,23 +41,19 @@ public class Lifeline2Alloy implements Rule{
 		// add the class, once for each
 		// one sig class {}
 		ASig lifelineClass = AlloyModel.getInstance().getSig("CLASS_" + lClass);
-		lifelineClass.set_attr(AAttr.ONE);
-		lifelineClass.zone = "class";
+		lifelineClass.set_attr(AAttr.ONE).zone = "Classes";
 		
 		// add the name
 		// one sig name{}
 		ASig lifelineName = AlloyModel.getInstance().getSig("NAME_" + lName);
-		lifelineName.set_attr(AAttr.ONE);
-		lifelineName.zone = "name";
+		lifelineName.set_attr(AAttr.ONE).zone = "Names";
 		
 		// add the lifeline
 		// one sig LL extends Lifeline {type: class , Name: name}
 		ASig lifelineSig = AlloyModel.getInstance().getSig(currentSD + "_" + lName);
-		lifelineSig.set_attr(AAttr.ONE);
-		lifelineSig.set_parent(lifelineAbstract);
-		lifelineSig.AddField("type", lifelineClass);
-		lifelineSig.AddField("name", lifelineName);
-		lifelineSig.zone = "lifeline";
+		lifelineSig.set_attr(AAttr.ONE).set_parent(lifelineAbstract);
+		lifelineSig.AddField("CLASS", lifelineClass).AddField("NAME", lifelineName);
+		lifelineSig.zone = "Lifeline";
 		return null;
 	}
 
