@@ -13,7 +13,13 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -37,7 +43,17 @@ public class View extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		restore();
-		viewer = new ListViewer(parent);
+		
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		layout.marginRight = -5;
+	    parent.setLayout(layout);
+	    
+		Label label = new Label(parent, SWT.BORDER);
+		label.setText("Models");
+		
+
+		viewer = new ListViewer(parent, SWT.BORDER | SWT.SCROLL_LINE);
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
 		viewer.setLabelProvider(new LabelProvider() {
 			@Override
@@ -46,6 +62,10 @@ public class View extends ViewPart {
 				return p.getFilename();
 			};
 		});
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		
+	    
+		viewer.getList().setLayoutData(gridData);
 		viewer.setInput(ModelManager.getInstance().getModels());
 		getSite().setSelectionProvider(viewer);
 		hookDoubleClickCommand();
@@ -141,6 +161,7 @@ public class View extends ViewPart {
 	public void init(final IViewSite site, final IMemento memento)
 			throws PartInitException {
 		init(site);
+		this.setPartName("hahaha");
 		this.memento = memento;
 	}
 

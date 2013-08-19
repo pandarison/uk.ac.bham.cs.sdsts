@@ -25,8 +25,9 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            category="org.eclipse.ui"
             class="uk.ac.bham.cs.sdsts.View"
-            icon="icons/win.png"
+            icon="icons/sdsts/window.png"
             id="uk.ac.bham.cs.sdsts.view"
             name="View">
       </view>
@@ -247,34 +248,7 @@
             id="uk.ac.bham.cs.sdsts.splashHandlers.extensible">
       </splashHandler>
    </extension>
-   <extension
-         point="uk.ac.bham.cs.sdsts.splashExtension">
-      <splashExtension
-            icon="icons/af.png"
-            id="af"
-            tooltip="Application Framework">
-      </splashExtension>
-      <splashExtension
-            icon="icons/embedded.png"
-            id="embedded"
-            tooltip="Embedded">
-      </splashExtension>
-      <splashExtension
-            icon="icons/enterprise.png"
-            id="enterprise"
-            tooltip="Enterprise">
-      </splashExtension>
-      <splashExtension
-            icon="icons/languages.png"
-            id="languages"
-            tooltip="Languages">
-      </splashExtension>
-      <splashExtension
-            icon="icons/rcp.png"
-            id="rcp"
-            tooltip="RCP">
-      </splashExtension>
-   </extension>
+ 
    <extension
          point="org.eclipse.ui.bindings">
       <key
@@ -302,6 +276,43 @@
                category="org.eclipse.papyrus"></propertyCategory>
       </propertyContributor>
    </extension>
+<extension
+      id="myproduct"
+      name="myproduct"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="uk.ac.bham.cs.sdsts.application"
+         name="SD Synthesizer">
+      <property
+            name="windowImages"
+            value="icons/alt_window_16.gif,icons/icon32.png,icons/icon48.png,icons/icon64.png">
+      </property>
+      <property
+            name="aboutText"
+            value="Sequence diagram synthesizer.">
+      </property>
+      <property
+            name="startupForegroundColor"
+            value="DD2E31">
+      </property>
+      <property
+            name="startupProgressRect"
+            value="0,280,455,15">
+      </property>
+      <property
+            name="startupMessageRect"
+            value="0,280,445,20">
+      </property>
+      <property
+            name="appName"
+            value="SD Synthesizer">
+      </property>
+      <property
+            name="preferenceCustomization"
+            value="plugin_customization.ini">
+      </property>
+   </product>
+</extension>
 
    
 </plugin>
