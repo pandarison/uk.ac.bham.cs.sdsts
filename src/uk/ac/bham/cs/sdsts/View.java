@@ -109,6 +109,14 @@ public class View extends ViewPart {
 				}
 			}
 		}
+		selectionsMomento = this.memento.getChild("model_font");
+		if(selectionsMomento != null){
+			IMemento fontName = selectionsMomento.getChild("name");
+			ModelManager.getInstance().setFont(fontName.getID());
+			IMemento fontSize = selectionsMomento.getChild("size");
+			ModelManager.getInstance().setFont_size(fontSize.getID());
+		}
+		
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -118,12 +126,15 @@ public class View extends ViewPart {
 		if (models.isEmpty()) {
 			return;
 		}
-		memento = memento.createChild("model_list");
+		IMemento MODELs = memento.createChild("model_list");
 		Iterator iter = models.iterator();
 		while (iter.hasNext()) {
 			Model model = (Model) iter.next();
-			memento.createChild("model_node", model.saveState());
+			MODELs.createChild("model_node", model.saveState());
 		}
+		memento = memento.createChild("model_font");
+		memento.createChild("name", ModelManager.getInstance().getFont());
+		memento.createChild("size", ModelManager.getInstance().getFont_size());
 	}
 
 	@Override

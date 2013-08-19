@@ -30,6 +30,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
+import uk.ac.bham.cs.sdsts.common.ModelManager;
+
+import edu.mit.csail.sdg.alloy4.OurDialog;
 import edu.mit.csail.sdg.alloy4.Util;
 
 public class AlloyEditor extends EditorPart {
@@ -72,7 +75,7 @@ public class AlloyEditor extends EditorPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		doc = new OurSyntaxDocument("Monospaced", 14);
+		doc = new OurSyntaxDocument(ModelManager.getInstance().getFont(), Integer.parseInt(ModelManager.getInstance().getFont_size()));
 		try {
 			doc.insertString(0, input.getCodeString(), null);
 		} catch (BadLocationException e) {
@@ -87,6 +90,7 @@ public class AlloyEditor extends EditorPart {
 		Frame frame = SWT_AWT.new_Frame(composite);
 		frame.add(scrollPane);
 		frame.setVisible(true);
+		
 		
 		
 	    /*parent.setLayout(new FillLayout());
@@ -115,6 +119,13 @@ public class AlloyEditor extends EditorPart {
 	private OurSyntaxDocument getText1(){
 		return doc;
 	}
+	public static void setFont(String fontName, String fontSize){
+		IEditorPart editor1 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		if(editor1 instanceof AlloyEditor){
+			AlloyEditor editor = (AlloyEditor) editor1;
+			editor.getText1().do_setFont(ModelManager.getInstance().getFont(), Integer.parseInt(ModelManager.getInstance().getFont_size()), 4);
+		}
+	}
 	public static String getText(){
 		IEditorPart editor1 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		if(editor1 instanceof AlloyEditor){
@@ -136,22 +147,24 @@ public class AlloyEditor extends EditorPart {
 		}
 	}
 	private void coloraLineColumn1(int line, int start, int end){
-//		line--;
-//		start--;
-//		end--;
-//		end = end - start + 1;
-//		String[] strings = text.getText().split("\n");
-//		String string = "";
-//		for(int i=0; i<line; ++i){
-//			string += strings[i] + 1;
-//		}
-//		start += string.length();
-//		//end += string.length();
-//		
-//		org.eclipse.swt.graphics.Color blue = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-//		
-//	    StyleRange range = new StyleRange(start, end, blue, null);
-//	    text.setStyleRange(range);
+		line--;
+		start--;
+		end--;
+		end = end - start + 1;
+		String[] strings = null;
+		try {
+			strings = doc.getText(0, doc.getLength()).split("\n");
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String string = "";
+		for(int i=0; i<line; ++i){
+			string += strings[i] + 1;
+		}
+		start += string.length();
+		//end += string.length();
+		doc.setCharacterAttributes(start, end, doc.styleError, false);
 	}
 
 	public static void coloraLineColumn(int line, int start, int leng){
@@ -200,6 +213,9 @@ class OurSyntaxDocument extends DefaultStyledDocument {
   /** The character style for regular text. */
   private final MutableAttributeSet styleNormal  = style(font, fontSize, false, java.awt.Color.BLACK, 0);          { all.add(styleNormal); }
 
+  /** The character style for symbols. */
+  public final MutableAttributeSet styleError  = style(font, fontSize, true, Color.RED, 0);           { all.add(styleError); }
+  
   /** The character style for symbols. */
   private final MutableAttributeSet styleSymbol  = style(font, fontSize, true, Color.BLACK, 0);           { all.add(styleSymbol); }
 

@@ -52,14 +52,23 @@
                label="File">
             <command
                   commandId="uk.ac.bham.cs.sdsts.CreateSdFile"
-                  icon="icons/Add.png"
+                  icon="icons/sdsts/File_Create_SD.png"
                   label="Create Sequence Diagram"
                   style="push">
             </command>
             <command
                   commandId="uk.ac.bham.cs.sdsts.CreateEqFile"
-                  icon="icons/Add.png"
+                  icon="icons/sdsts/File_Create_EQ.png"
                   label="Create Equality File"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               label="Option">
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.setFont"
+                  icon="icons/sdsts/Option_Set_Font.png"
+                  label="Set Font"
                   style="push">
             </command>
          </menu>
@@ -67,12 +76,13 @@
                label="Edit">
             <command
                   commandId="uk.ac.bham.cs.sdsts.doSave"
-                  icon="icons/Lock.png"
+                  icon="icons/sdsts/Edit_Save.png"
                   label="Save"
                   style="push">
             </command>
             <command
                   commandId="uk.ac.bham.cs.sdsts.selectAll"
+                  icon="icons/sdsts/Edit_Select_All.png"
                   label="Select all"
                   style="push">
             </command>
@@ -81,12 +91,13 @@
                label="Tool">
             <command
                   commandId="uk.ac.bham.cs.sdsts.merge"
-                  icon="icons/Refresh.png"
+                  icon="icons/sdsts/Tool_Merge.png"
                   label="Merge"
                   style="push">
             </command>
             <command
                   commandId="uk.ac.bham.cs.sdsts.OpenAlloyEditor"
+                  icon="icons/sdsts/Run_Show_Alloy.png"
                   label="Show Alloy Model"
                   style="push">
                <visibleWhen>
@@ -103,6 +114,7 @@
                label="Run">
             <command
                   commandId="uk.ac.bham.cs.sdsts.OpenAlloyViz"
+                  icon="icons/sdsts/Run_Show_Alloy.png"
                   label="Show Alloy Graph"
                   style="push">
             </command>
@@ -172,6 +184,11 @@
             defaultHandler="uk.ac.bham.cs.sdsts.handler.CallSelectAll"
             id="uk.ac.bham.cs.sdsts.selectAll"
             name="Select All">
+      </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallSetFont"
+            id="uk.ac.bham.cs.sdsts.setFont"
+            name="Set Font">
       </command>
    </extension>
    

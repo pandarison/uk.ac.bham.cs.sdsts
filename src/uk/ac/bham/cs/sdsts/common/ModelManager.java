@@ -5,7 +5,24 @@ import java.util.ArrayList;
 
 public class ModelManager {
 	private static ModelManager modelManager;
+	private String font = "Monaco";
+	private String font_size = "12";
 	
+	public String getFont_size() {
+		return font_size;
+	}
+
+	public void setFont_size(String font_size) {
+		this.font_size = font_size;
+	}
+
+	public String getFont() {
+		return font;
+	}
+
+	public void setFont(String font) {
+		this.font = font;
+	}
 	private ArrayList<Model> models = new ArrayList<Model>();
 	
 	public static ModelManager getInstance(){
