@@ -60,6 +60,7 @@ public class CallOpenAlloyEditor extends AbstractHandler {
 		IWorkbenchPage page = window.getActivePage();
  
 		AlloyEditorInput input = new AlloyEditorInput(AlloyModel.getInstance().getResult());
+		input.setEditorTitle("merged");
 		try {
 			page.openEditor(input, AlloyEditor.ID);
 		} catch (PartInitException e) {

@@ -133,6 +133,7 @@ public class CallOpenAlloyViz extends AbstractHandler {
             A4Options options = new A4Options();
             options.solver = A4Options.SatSolver.SAT4J;
 
+            if(world != null)
             for (Command command: world.getAllCommands()) {
                 // Execute the command
                 //System.out.println("============ Command "+command+": ============");
