@@ -39,11 +39,6 @@ public class Equality extends Model {
 	}
 
 	@Override
-	public String getId() {
-		return file.getPath();
-	}
-
-	@Override
 	public void save() {
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);

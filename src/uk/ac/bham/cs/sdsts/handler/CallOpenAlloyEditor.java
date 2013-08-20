@@ -31,7 +31,6 @@ public class CallOpenAlloyEditor extends AbstractHandler {
 		PapyrusMultiDiagramEditor iEditorPart = (PapyrusMultiDiagramEditor) page.getActiveEditor();
 		
 		URI uri = CommonPlugin.resolve(iEditorPart.getDiagram().eResource().getResourceSet().getResources().get(2).getURI());
-		
 		String modelID = uri.toFileString();
 		SequenceDiagram sequenceDiagram = (SequenceDiagram) ModelManager.getInstance().getModel(modelID);
 		SDConsole.print_stars();

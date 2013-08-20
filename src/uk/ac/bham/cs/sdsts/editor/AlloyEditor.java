@@ -32,7 +32,6 @@ import org.eclipse.ui.part.EditorPart;
 
 import uk.ac.bham.cs.sdsts.common.ModelManager;
 
-import edu.mit.csail.sdg.alloy4.OurDialog;
 import edu.mit.csail.sdg.alloy4.Util;
 
 public class AlloyEditor extends EditorPart {

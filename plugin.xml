@@ -63,6 +63,18 @@
                   label="Create Equality File"
                   style="push">
             </command>
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.openSD"
+                  icon="icons/sdsts/File_Open.png"
+                  label="Open Sequence Diagram"
+                  style="push">
+            </command>
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.openEQ"
+                  icon="icons/sdsts/File_Open.png"
+                  label="Open Equality File"
+                  style="push">
+            </command>
          </menu>
          <menu
                label="Option">
@@ -190,6 +202,16 @@
             defaultHandler="uk.ac.bham.cs.sdsts.handler.CallSetFont"
             id="uk.ac.bham.cs.sdsts.setFont"
             name="Set Font">
+      </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallOpenSD"
+            id="uk.ac.bham.cs.sdsts.openSD"
+            name="Open Sequence Diagram">
+      </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallOpenEQ"
+            id="uk.ac.bham.cs.sdsts.openEQ"
+            name="Open Equality File">
       </command>
    </extension>
    

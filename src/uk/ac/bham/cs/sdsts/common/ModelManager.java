@@ -33,11 +33,15 @@ public class ModelManager {
 	}
 	
 	public void AddModel(Model model){
+		for (Model model2 : models) {
+			if(model2.getFilename().equals(model.getFilename()))
+				return;
+		}
 		models.add(model);
 	}
-	public Model getModel(String id){
+	public Model getModel(String path){
 		for (Model model : models) {
-			if(model.getId().equals(id))
+			if(model.getFilepath().equals(path))
 				return model;
 		}
 		return null;

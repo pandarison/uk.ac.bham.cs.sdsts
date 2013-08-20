@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.papyrus.infra.core.extension.commands.ICreationCommand;
 import org.eclipse.papyrus.infra.core.utils.DiResourceSet;
 import org.eclipse.papyrus.infra.core.utils.EditorUtils;
@@ -44,12 +45,12 @@ public class CallCreateSdFile extends AbstractHandler{
 	    View view = (View) page.findView(View.ID);
 	    view.getViewer().refresh();
 	    FileDialog filedlg = new FileDialog(window.getShell(), SWT.SAVE);
-		filedlg.setText("Create Equality File");
+		filedlg.setText("Create Sequence Diagram File");
 		filedlg.setFilterPath("SystemRoot");
 		filedlg.setFilterExtensions(new String[]{"di"});
 		String selected=filedlg.open();
 		MyCreater myCreater = new MyCreater();
-		myCreater.init(window.getWorkbench(), (IStructuredSelection) window.getSelectionService().getSelection());
+		myCreater.init(window.getWorkbench(), new StructuredSelection());
 		IFile iFile = myCreater.create(selected);
 		
 		SequenceDiagram sdDiagram = new SequenceDiagram();

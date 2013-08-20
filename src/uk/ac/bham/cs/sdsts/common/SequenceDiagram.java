@@ -32,11 +32,6 @@ public class SequenceDiagram extends Model{
 	public String getFilename() {
 		return iFile.getName();
 	}
-	
-	@Override
-	public String getId() {
-		return filePath;
-	}
 
 	@Override
 	public void save() {
@@ -87,6 +82,10 @@ public class SequenceDiagram extends Model{
 	@Override
 	public String getName() {
 		return new Path(filePath).removeFileExtension().lastSegment();
+	}
+	@Override
+	public String getFilepath() {
+		return filePath;
 	}
 
 }

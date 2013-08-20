@@ -34,7 +34,7 @@ public class CallMerge extends AbstractHandler {
 		ArrayList<String> eqFileList = new ArrayList<String>();
 		for (Model model : ModelManager.getInstance().getModels()) {
 			if(model instanceof Equality)
-				eqFileList.add(model.getId());
+				eqFileList.add(model.getFilepath());
 		}
 		dialog.setElements(eqFileList.toArray());
 		if(dialog.open() != Window.OK)

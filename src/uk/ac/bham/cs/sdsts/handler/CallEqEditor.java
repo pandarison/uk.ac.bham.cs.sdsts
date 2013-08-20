@@ -38,7 +38,7 @@ public class CallEqEditor extends AbstractHandler {
 	    if (obj != null) {
 	    	if(obj instanceof Equality){
 	    		Equality equality = (Equality) obj;
-	  	        EqEditorInput input = new EqEditorInput(equality.getId());
+	  	        EqEditorInput input = new EqEditorInput(equality.getFilepath());
 	  	        try {
 	  	        	if(page.findEditor(input) == null){
 	  	        		page.openEditor(input, EqEditor.ID);
