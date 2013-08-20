@@ -50,7 +50,7 @@ public class CallCreateSdFile extends AbstractHandler{
 		filedlg.setFilterExtensions(new String[]{"di"});
 		String selected=filedlg.open();
 		MyCreater myCreater = new MyCreater();
-		myCreater.init(window.getWorkbench(), new StructuredSelection());
+		myCreater.init(window.getWorkbench(), new StructuredSelection()); // fixed bug
 		IFile iFile = myCreater.create(selected);
 		
 		SequenceDiagram sdDiagram = new SequenceDiagram();
