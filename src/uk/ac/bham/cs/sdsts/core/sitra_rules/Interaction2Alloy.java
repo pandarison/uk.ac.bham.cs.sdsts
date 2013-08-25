@@ -1,9 +1,12 @@
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.eclipse.uml2.uml.CombinedFragment;
 import org.eclipse.uml2.uml.Interaction;
 import org.eclipse.uml2.uml.InteractionFragment;
+import org.eclipse.uml2.uml.Lifeline;
 import org.eclipse.uml2.uml.Message;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
 import org.eclipse.uml2.uml.internal.impl.InteractionImpl;
@@ -38,32 +41,47 @@ public class Interaction2Alloy implements Rule{
 			e.printStackTrace();
 		}
 
-		try {
-			// create _SD_
-			ASig SD = AlloyModel.getInstance().getSig("_SD_");
-			SD.set_attr(AAttr.ONE).zone = "SD";
-			
-			// iterate messages
-			ArrayList<Message> messages = new ArrayList<Message>();
-			for (InteractionFragment interactionFragment : interaction.getFragments()) {
-				if(interactionFragment instanceof MessageOccurrenceSpecification){
-					MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
-					if(!messages.contains(event.getMessage())){
-						t.transform(event.getMessage());
-						messages.add(event.getMessage());
-					}
+		// add abstract for Fragment
+		// abstract sig FRAGMENT{BEFORE: set FRAGMENT}
+		ASig fragmentAbstract = AlloyModel.getInstance().getSig("FRAGMENT");
+		fragmentAbstract.set_attr(AAttr.ABSTRACT);
+		fragmentAbstract.AddField("BEFORE", fragmentAbstract.setOf());
+		fragmentAbstract.zone = "Abstract";
+		
+		// add abstract for Operand
+		// abstract sig OPERAND{COVER: set FRAGMENT}
+		ASig OperandAbstract = AlloyModel.getInstance().getSig("OPERAND");
+		OperandAbstract.set_attr(AAttr.ABSTRACT);
+		OperandAbstract.AddField("COVER", fragmentAbstract.setOf());
+		OperandAbstract.zone = "Abstract";
+		
+		// create _SD_
+		ASig _SD_ = AlloyModel.getInstance().getSig("_SD_");
+		_SD_.set_attr(AAttr.ONE).zone = "SD";
+		
+		// create signature for SD
+		ASig SD = AlloyModel.getInstance().getSig(currentSD);
+		SD.set_attr(AAttr.ONE).set_parent(OperandAbstract);
+		SD.zone = "SD";
+		
+		// iterate messages
+		HashMap<String, ASig> lastElementOnLifeline = new HashMap<String, ASig>();
+		for (InteractionFragment interactionFragment : interaction.getFragments()) {
+			for (Lifeline lifeline : interactionFragment.getCovereds()) {
+				ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
+				if(lastElementOnLifeline.containsKey(lifeline.getName())){
+					AlloyModel.getInstance().addFact("%s in %s.BEFORE", fragmentSig, lastElementOnLifeline.get(lifeline.getName())).zone = "Ordering";
 				}
+				lastElementOnLifeline.put(lifeline.getName(), fragmentSig);
 			}
-			for (int i = 0; i < messages.size() - 1; i++) {
-				Message message1 = messages.get(i);
-				Message message2 = messages.get(i + 1);
-				ASig message1Sig = AlloyModel.getInstance().getSig(currentSD_ + message1.getName());
-				ASig message2Sig = AlloyModel.getInstance().getSig(currentSD_ + message2.getName());		
-				AlloyModel.getInstance().addFact("%s in %s.^BEFORE", message2Sig, message1Sig).zone = "Ordering";
-			}
-		} catch (RuleNotFoundException e) {
-			e.printStackTrace();
+			ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
+			AlloyModel.getInstance().addFact("all _F: %s | _F in %s.COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
 		}
+		/**
+		***  Constraint: Fragment
+		**/
+		AlloyModel.getInstance().addFact("// no circle\nfact{all _F: FRAGMENT  | _F !in _F.^BEFORE}").zone = "Constraint: Fragment";
+		AlloyModel.getInstance().addFact("// should be covered by at most one Operand\nfact{all _F: FRAGMENT  | lone _OP: OPERAND | _F in _OP.COVER}").zone = "Constraint: Fragment";
 		return null;
 	}
 

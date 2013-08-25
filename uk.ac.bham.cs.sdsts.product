@@ -306,6 +306,7 @@
       <plugin id="org.eclipse.papyrus.infra.ui.resources"/>
       <plugin id="org.eclipse.papyrus.infra.widgets"/>
       <plugin id="org.eclipse.papyrus.infra.widgets.toolbox"/>
+      <plugin id="org.eclipse.papyrus.layout"/>
       <plugin id="org.eclipse.papyrus.uml.appearance"/>
       <plugin id="org.eclipse.papyrus.uml.diagram.common"/>
       <plugin id="org.eclipse.papyrus.uml.diagram.navigation"/>
@@ -367,6 +368,7 @@
       <plugin id="org.eclipse.uml2.uml.editor"/>
       <plugin id="org.eclipse.uml2.uml.profile.l2"/>
       <plugin id="org.eclipse.update.configurator"/>
+      <plugin id="org.eclipse.zest.layouts"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>

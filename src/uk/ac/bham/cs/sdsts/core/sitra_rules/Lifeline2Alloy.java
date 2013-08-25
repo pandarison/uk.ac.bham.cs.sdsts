@@ -1,5 +1,7 @@
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.uml2.uml.InteractionFragment;
 import org.eclipse.uml2.uml.Lifeline;
 import org.eclipse.uml2.uml.internal.impl.LifelineImpl;
 
@@ -25,6 +27,7 @@ public class Lifeline2Alloy implements Rule{
 	public Object build(Object source, Transformer t) {
 		Lifeline lifeline = (Lifeline) source;
 		String currentSD = AlloyModel.getInstance().getSD();
+		
 		// add abstract for lifeline
 		// abstract sig LIFELINE {}
 		ASig lifelineAbstract = AlloyModel.getInstance().getSig("LIFELINE");
@@ -47,7 +50,7 @@ public class Lifeline2Alloy implements Rule{
 		// one sig name{}
 		ASig lifelineName = AlloyModel.getInstance().getSig("NAME_" + lName);
 		lifelineName.set_attr(AAttr.ONE).zone = "Names";
-		
+				
 		// add the lifeline
 		// one sig LL extends Lifeline {type: class , Name: name}
 		ASig lifelineSig = AlloyModel.getInstance().getSig(currentSD + "_" + lName);

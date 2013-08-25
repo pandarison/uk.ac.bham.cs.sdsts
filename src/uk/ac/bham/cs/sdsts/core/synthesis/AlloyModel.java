@@ -88,27 +88,30 @@ public class AlloyModel {
 	public String getResult(){
 		String string = "";
 		string += toResult("Abstract", _sigs, false);
-		string += toResult("Combined Fragment Type", _sigs, false);
 		string += toResult("SD", _sigs, false);
+		string += toResult("Combined Fragment Type", _sigs, false);
+		string += toResult("Combined Fragment", _sigs, false);
+		string += toResult("Operand", _sigs, false);
+
 		string += toResult("Names", _sigs, false);
 		string += toResult("Classes", _sigs, false);
 		string += toResult("Lifeline", _sigs, false);
-		string += toResult("Combined Fragment", _sigs, false);
-		string += toResult("Operand", _sigs, false);
-		string += toResult("Message", _sigs, false);
 		string += toResult("Event", _sigs, false);
-		string += toResult("Combined Fragment Type Binding", _facts, true);
-		string += toResult("Covering: Combined Fragment->Operand", _facts, true);
-		string += toResult("Covering: Operand->Message", _facts, true);
+		string += toResult("Message", _sigs, false);
+
+		string += toResult("Binding: Combined Fragment Type", _facts, true);
 		string += toResult("Binding: Message->Event", _facts, true);
+		string += toResult("Covering: Combined Fragment->Operand", _facts, true);
 		string += toResult("Covering: Event->Lifeline", _facts, true);
-		string += toResult("CF_Alt: Message->Operand", _facts, true);
+		string += toResult("Covering: Operand->Fragment", _facts, true);
+		string += toResult("Number: Message = Operand", _facts, true);
 		string += toResult("Ordering", _facts, true);
-		string += toResult("Glue", _facts, true);
-		string += toResult("relation between Operand and Combined Fragment", _facts, false);
-		string += toResult("relation between Message and Operand", _facts, false);
-		string += toResult("relation among Messages", _facts, false);
-		string += toResult("Avoid circle in events", _facts, false);
+		
+		string += toResult("Constraint: Lifeline", _facts, false);
+		string += toResult("Constraint: Combined Fragment", _facts, false);
+		string += toResult("Constraint: Message", _facts, false);
+		string += toResult("Constraint: Fragment", _facts, false);
+		
 		string += "run{}\n";
 		
 		return string;
@@ -174,10 +177,7 @@ public class AlloyModel {
 			return;
 		}
 		
-		// make sig to lone and replace the fields
-		message2Sig.set_attr(AAttr.LONE);
-		message2SendSig.set_attr(AAttr.LONE);
-		message2RecSig.set_attr(AAttr.LONE);
+		
 		
 		this.addFact(String.format("all SD1M:%s , SD2M:%s | (SD1M.NAME = SD2M.NAME) => # SD2M = 0", message1Sig.get_name(), message2Sig.get_name())).zone = "Glue";
 		this.addFact(String.format("# %s = 0", message2SendSig.get_name())).zone = "Glue";
@@ -190,6 +190,11 @@ public class AlloyModel {
 		message2Sig.mergeTo(message1Sig);
 		message2SendSig.mergeTo(message1SendSig);
 		message2RecSig.mergeTo(message1RecSig);
+		
+		// make sig to lone and replace the fields
+		message2Sig.set_attr(AAttr.LONE);
+		message2SendSig.set_attr(AAttr.LONE);
+		message2RecSig.set_attr(AAttr.LONE);
 	}
 	
 	public boolean addEquality(String lName, String rName){

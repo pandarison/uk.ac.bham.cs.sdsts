@@ -99,6 +99,10 @@
                   label="Select all"
                   style="push">
             </command>
+            <command
+                  commandId="uk.ac.bham.cs.sdsts.test"
+                  style="push">
+            </command>
          </menu>
          <menu
                label="Tool">
@@ -213,6 +217,11 @@
             id="uk.ac.bham.cs.sdsts.openEQ"
             name="Open Equality File">
       </command>
+      <command
+            defaultHandler="uk.ac.bham.cs.sdsts.handler.CallTest"
+            id="uk.ac.bham.cs.sdsts.test"
+            name="test">
+      </command>
    </extension>
    
    
@@ -307,7 +316,7 @@
          name="SD Synthesizer">
       <property
             name="windowImages"
-            value="icons/alt_window_16.gif,icons/icon32.png,icons/icon48.png,icons/icon64.png">
+            value="icons/alt_window_16.gif">
       </property>
       <property
             name="aboutText"

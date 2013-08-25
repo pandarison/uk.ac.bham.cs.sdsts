@@ -47,9 +47,11 @@ public class CombinedFragment2Alloy implements Rule {
 			
 			// add abstract for combinedFragment
 			// abstract sig COMBINEDFRAGMENT{COVER: set OPERAND, TYPE: one CF_TYPE}
+			ASig fragmentAbstract = AlloyModel.getInstance().getSig("FRAGMENT");
 			ASig operandAbstract = AlloyModel.getInstance().getSig("OPERAND");
 			ASig combinedFragmentAbstract = AlloyModel.getInstance().getSig("COMBINEDFRAGMENT");
 			combinedFragmentAbstract.set_attr(AAttr.ABSTRACT);
+			combinedFragmentAbstract.set_parent(fragmentAbstract);
 			combinedFragmentAbstract.AddField("COVER", operandAbstract.setOf());
 			combinedFragmentAbstract.AddField("TYPE", combinedFragmentType.oneOf());
 			combinedFragmentAbstract.zone = "Abstract";
@@ -65,8 +67,6 @@ public class CombinedFragment2Alloy implements Rule {
 			}
 			if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.ALT_LITERAL){
 				cfType = AlloyModel.getInstance().getSig("CF_TYPE_ALT");
-				// Fact: only one operand can be executed for Alt
-				AlloyModel.getInstance().addFact("// Fact: only one operand can be executed for Alt\nfact{all _CF: COMBINEDFRAGMENT | (_CF.TYPE = CF_TYPE_ALT) =>#_CF.COVER = 1}").zone = "relation between Operand and Combined Fragment";
 			}
 			if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.LOOP_LITERAL){
 				cfType = AlloyModel.getInstance().getSig("CF_TYPE_LOOP");
@@ -82,11 +82,12 @@ public class CombinedFragment2Alloy implements Rule {
 			combinedFragmentSig.set_parent(combinedFragmentAbstract);
 			combinedFragmentSig.zone = "Combined Fragment";
 			
-			// Fact: CF -> Type
-			AlloyModel.getInstance().addFact("%s.TYPE = %s", combinedFragmentSig, cfType).zone = "Combined Fragment Type Binding";
+			// Fact: CF.Type = Type
+			AlloyModel.getInstance().addFact("%s.TYPE = %s", combinedFragmentSig, cfType).zone = "Binding: Combined Fragment Type";
 			
 			// Relations among operands
 			for (InteractionOperand interactionOperand : combinedFragment.getOperands()) {
+				interactionOperand.setName(combinedFragment.getName() + "_" + interactionOperand.getName());
 				ASig interactionOperandSig = (ASig) t.transform(interactionOperand);
 				// Fact Combined Fragment covers Operand
 				AlloyModel.getInstance().addFact("%s in %s.COVER", interactionOperandSig, combinedFragmentSig).zone = "Covering: Combined Fragment->Operand";
@@ -97,17 +98,19 @@ public class CombinedFragment2Alloy implements Rule {
 					for (Message message : getMessagesInOperand(interactionOperand)) {
 						ASig messageSig = AlloyModel.getInstance().getSig(currentSD_ + message.getName());
 						messageSig.set_attr(AAttr.LONE);
-						AlloyModel.getInstance().addFact("#%s=#%s", messageSig, interactionOperandSig).zone = "CF_Alt: Message->Operand";
+						AlloyModel.getInstance().addFact("#%s=#%s", messageSig, interactionOperandSig).zone = "Number: Message = Operand";
 					}
 				}
 			}
-			
-			
-			// Fact
-			// all operands can be covered by at most one operand
-			AlloyModel.getInstance().addFact("// all operands can be covered by at most one operand\nfact{all _OP: OPERAND | lone _CF: COMBINEDFRAGMENT | _OP in _CF.COVER}").zone = "relation between Operand and Combined Fragment";
-			// in one CF, only one Operand's message can have child outside the operand
-			AlloyModel.getInstance().addFact("// in one CF, only one Operand's message can have child outside the operand\nfact{all _CF: COMBINEDFRAGMENT | lone _M:_CF.COVER.COVER | _M.BEFORE !in _CF.COVER.COVER or #_M.BEFORE=0}").zone = "relation between Operand and Combined Fragment";
+			/**
+			***  Constraint: Combined Fragment
+			**/
+			// shouldn't be before its children
+			AlloyModel.getInstance().addFact("// shouldn't be before its children\nfact{all _CF: COMBINEDFRAGMENT | no _E: _CF.COVER.COVER |  _CF in _E.BEFORE or _E in _CF.BEFORE}").zone = "Constraint: Combined Fragment";
+			AlloyModel.getInstance().addFact("// only one Operand can interact with fragment outside the CF\nfact{all _CF: COMBINEDFRAGMENT, _E2: EVENT | lone _E1: _CF.COVER.COVER |  _E2 in _E1.BEFORE and _E2.COVER=_E1.COVER and _E2 !in _CF.COVER.COVER }").zone = "Constraint: Combined Fragment";
+			AlloyModel.getInstance().addFact("// one Operand can interact with at most One other Operand\nfact{all _CF: COMBINEDFRAGMENT, _OP1: _CF.COVER, _OP2: _CF.COVER, _E1: _OP1.COVER,_E2: _OP2.COVER, _E3: _OP1.COVER | no _E4: _OP2.COVER | _OP1 != _OP2 and _E2 in _E1.BEFORE and _E3 in _E4.BEFORE  }").zone = "Constraint: Combined Fragment";
+			AlloyModel.getInstance().addFact("// order before CF and other Fragment\nfact{all _CF: COMBINEDFRAGMENT, _E1: _CF.COVER.COVER, _E2: EVENT | (_CF in _E2.BEFORE and _E1.COVER=_E2.COVER ) =>_E1 in _E2.^BEFORE}").zone = "Constraint: Combined Fragment";
+			AlloyModel.getInstance().addFact("// alt: exact one operand will be executed\nfact{all _CF: COMBINEDFRAGMENT | (_CF.TYPE = CF_TYPE_ALT) => #_CF.COVER = 1}").zone = "Constraint: Combined Fragment";
 		} catch (RuleNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
