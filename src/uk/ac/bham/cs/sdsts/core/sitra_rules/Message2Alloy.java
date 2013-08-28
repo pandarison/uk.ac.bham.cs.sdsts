@@ -98,6 +98,11 @@ public class Message2Alloy implements Rule{
 		AlloyModel.getInstance().addFact("%s.SEND = %s", messageSig, eventSendSig).zone = "Binding: Message->Event";
 		AlloyModel.getInstance().addFact("%s.RECEIVE = %s", messageSig, eventRecSig).zone = "Binding: Message->Event";
 		
+		messageSig.addNote("SEND", eventSendSig);
+		messageSig.addNote("RECEIVE", eventRecSig);
+		eventSendSig.addNote("COVER", AlloyModel.getInstance().getSig(lifelineFrom));
+		eventRecSig.addNote("COVER", AlloyModel.getInstance().getSig(lifelineTo));
+		
 		/**
 		***  Constraint: Lifeline
 		**/

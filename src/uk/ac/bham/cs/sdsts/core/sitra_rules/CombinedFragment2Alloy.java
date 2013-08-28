@@ -105,12 +105,22 @@ public class CombinedFragment2Alloy implements Rule {
 			/**
 			***  Constraint: Combined Fragment
 			**/
-			// shouldn't be before its children
-			AlloyModel.getInstance().addFact("// shouldn't be before its children\nfact{all _CF: COMBINEDFRAGMENT | no _E: _CF.COVER.COVER |  _CF in _E.BEFORE or _E in _CF.BEFORE}").zone = "Constraint: Combined Fragment";
-			AlloyModel.getInstance().addFact("// only one Operand can interact with fragment outside the CF\nfact{all _CF: COMBINEDFRAGMENT, _E2: EVENT | lone _E1: _CF.COVER.COVER |  _E2 in _E1.BEFORE and _E2.COVER=_E1.COVER and _E2 !in _CF.COVER.COVER }").zone = "Constraint: Combined Fragment";
-			AlloyModel.getInstance().addFact("// one Operand can interact with at most One other Operand\nfact{all _CF: COMBINEDFRAGMENT, _OP1: _CF.COVER, _OP2: _CF.COVER, _E1: _OP1.COVER,_E2: _OP2.COVER, _E3: _OP1.COVER | no _E4: _OP2.COVER | _OP1 != _OP2 and _E2 in _E1.BEFORE and _E3 in _E4.BEFORE  }").zone = "Constraint: Combined Fragment";
+			// only one Operand can interact with fragment outside the CF
+			AlloyModel.getInstance().addFact("// only one Operand can interact with fragment outside the CF\nfact{all _CF: COMBINEDFRAGMENT, _OP2: OPERAND | lone _OP1: _CF.COVER | some _E: _OP1.COVER | all _E1: _OP1.COVER | ((_E in _OP2.COVER.BEFORE or _OP2.COVER in _E.BEFORE) and _OP2 !in _CF.COVER) or #_E1.BEFORE=0 }").zone = "Constraint: Combined Fragment";
+			// order before CF and other Fragment
 			AlloyModel.getInstance().addFact("// order before CF and other Fragment\nfact{all _CF: COMBINEDFRAGMENT, _E1: _CF.COVER.COVER, _E2: EVENT | (_CF in _E2.BEFORE and _E1.COVER=_E2.COVER ) =>_E1 in _E2.^BEFORE}").zone = "Constraint: Combined Fragment";
-			AlloyModel.getInstance().addFact("// alt: exact one operand will be executed\nfact{all _CF: COMBINEDFRAGMENT | (_CF.TYPE = CF_TYPE_ALT) => #_CF.COVER = 1}").zone = "Constraint: Combined Fragment";
+			// if one fragment has relation with CF, then its event has relation with CF's events
+			AlloyModel.getInstance().addFact("// if one fragment has relation with CF, then its event has relation with CF's events\nfact{all _E1: EVENT, _CF: COMBINEDFRAGMENT, _E2: EVENT| _CF in _E1.BEFORE => not (_E2 in _E1.BEFORE and _E2 !in _CF.COVER.COVER and _E2.COVER=_E1.COVER)}").zone = "Constraint: Combined Fragment";
+			// shouldn't be before its children
+			AlloyModel.getInstance().addFact("// shouldn't be before its children\nfact{all _CF: COMBINEDFRAGMENT | no _E: _CF.COVER.COVER |  _CF in _E.BEFORE or _E in _CF.BEFORE}\nfact{all _OP: OPERAND | _OP !in _OP.COVER.COVER}").zone = "Constraint: Combined Fragment";
+			// one Operand can interact with at most One other Operand
+			AlloyModel.getInstance().addFact("// one Operand can interact with at most One other Operand\nfact{all _CF: COMBINEDFRAGMENT, _OP1: _CF.COVER, _OP2: _CF.COVER, _E1: _OP1.COVER,_E2: _OP2.COVER, _E3: _OP1.COVER | no _E4: _OP2.COVER | _OP1 != _OP2 and _E2 in _E1.BEFORE and _E3 in _E4.BEFORE  }").zone = "Constraint: Combined Fragment";
+			// all CF can have at most one Next and can be Next of at most one Fragment
+			AlloyModel.getInstance().addFact("// all CF can have at most one Next and can be Next of at most one Fragment\nfact{all _CF: COMBINEDFRAGMENT | all _L: LIFELINE | lone _E: EVENT | _E.COVER=_L and _CF in _E.BEFORE}\nfact{all _CF: COMBINEDFRAGMENT | all _L: LIFELINE | lone _E: EVENT | _E.COVER=_L and _CF in _E.BEFORE}").zone = "Constraint: Combined Fragment";
+			// all CF have no relation with Lifeline which it does not cover
+			AlloyModel.getInstance().addFact("// all CF have no relation with Lifeline which it does not cover\nfact{all _E: EVENT | all _CF: COMBINEDFRAGMENT | some _E1: EVENT | (_E in _CF.BEFORE or _CF in _E.BEFORE) => (_E1.COVER = _E.COVER and _E1 in _CF.COVER.COVER)}").zone = "Constraint: Combined Fragment";
+			if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.ALT_LITERAL)
+				AlloyModel.getInstance().addFact("// alt: exact one operand will be executed\nfact{all _CF: COMBINEDFRAGMENT | (_CF.TYPE = CF_TYPE_ALT) => #_CF.COVER = 1}").zone = "Constraint: Combined Fragment";
 		} catch (RuleNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

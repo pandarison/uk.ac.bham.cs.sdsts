@@ -33,7 +33,7 @@ public class InteractionOperand2Alloy implements Rule {
 		InteractionOperand interactionOperand = (InteractionOperand) source;
 		String currentSD = AlloyModel.getInstance().getSD();
 		String currentSD_ = currentSD + "_";
-				
+						
 		// add the operand
 		// one sig op1 extends OPERAND{}
 		ASig operandAbstract = AlloyModel.getInstance().getSig("OPERAND");

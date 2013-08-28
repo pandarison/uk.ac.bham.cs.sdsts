@@ -59,7 +59,7 @@ public class CallOpenAlloyViz extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
 			String result = AlloyEditor.getText();
-			IWorkspace ws = ResourcesPlugin.getWorkspace();
+			IWorkspace  ws = ResourcesPlugin.getWorkspace();
 			parent_shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			IProject project = ws.getRoot().getProject("tmp");
 			if (!project.exists())
@@ -157,12 +157,14 @@ public class CallOpenAlloyViz extends AbstractHandler {
 							@Override
 							public String compute(Object input) throws Exception {
 								ans = ans.next();
+							
 								if(ans.satisfiable() == false){
 										OurDialog.alert("No more satisfying instances.");
 										return null;
 								}
+								
 								ans.writeXML("alloy_example_output.xml");
-								viz.loadXML("alloy_example_output.xml", true);
+								viz.loadXML("alloy_example_output.xml", false);
 								return (String) input;
 							}
 						}, evaluator);
