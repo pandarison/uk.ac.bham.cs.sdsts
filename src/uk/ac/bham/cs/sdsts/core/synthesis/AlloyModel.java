@@ -106,6 +106,7 @@ public class AlloyModel {
 		string += toResult("Covering: Operand->Fragment", _facts, true);
 		string += toResult("Number: Message = Operand", _facts, true);
 		string += toResult("Ordering", _facts, true);
+		string += toResult("Glue", _facts, true);
 		
 		string += toResult("Constraint: Lifeline", _facts, false);
 		string += toResult("Constraint: Combined Fragment", _facts, false);
@@ -183,9 +184,6 @@ public class AlloyModel {
 		this.addFact(String.format("# %s = 0", message2SendSig.get_name())).zone = "Glue";
 		this.addFact(String.format("# %s = 0", message2RecSig.get_name())).zone = "Glue";
 		
-//		this.addFact(String.format("# %s = 0", message2Sig.get_name())).zone = "hidden";
-//		this.addFact(String.format("# %s = 0", message2SendSig.get_name())).zone = "hidden";
-//		this.addFact(String.format("# %s = 0", message2RecSig.get_name())).zone = "hidden";
 		
 		message2Sig.mergeTo(message1Sig);
 		message2SendSig.mergeTo(message1SendSig);

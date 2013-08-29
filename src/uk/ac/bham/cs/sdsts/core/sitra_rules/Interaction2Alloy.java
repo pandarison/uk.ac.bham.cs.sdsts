@@ -53,12 +53,15 @@ public class Interaction2Alloy implements Rule{
 		
 		// create _SD_
 		ASig _SD_ = AlloyModel.getInstance().getSig("_SD_");
+		_SD_.set_parent(OperandAbstract);
 		_SD_.set_attr(AAttr.ONE).zone = "SD";
 		
 		// create signature for SD
 		ASig SD = AlloyModel.getInstance().getSig(currentSD);
 		SD.set_attr(AAttr.ONE).set_parent(OperandAbstract);
 		SD.zone = "SD";
+		
+		SD.mergeTo(_SD_);
 		
 		// iterate messages
 		HashMap<String, ASig> lastElementOnLifeline = new HashMap<String, ASig>();
