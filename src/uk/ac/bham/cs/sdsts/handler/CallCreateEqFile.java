@@ -10,8 +10,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import uk.ac.bham.cs.sdsts.View;
-import uk.ac.bham.cs.sdsts.common.Equality;
-import uk.ac.bham.cs.sdsts.common.ModelManager;
+import uk.ac.bham.cs.sdsts.Model.Equality;
+import uk.ac.bham.cs.sdsts.Model.ModelManager;
 
 public class CallCreateEqFile extends AbstractHandler{
 

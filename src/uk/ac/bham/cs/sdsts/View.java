@@ -24,10 +24,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
-import uk.ac.bham.cs.sdsts.common.Equality;
-import uk.ac.bham.cs.sdsts.common.Model;
-import uk.ac.bham.cs.sdsts.common.ModelManager;
-import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
+import uk.ac.bham.cs.sdsts.Model.*;;
 
 public class View extends ViewPart {
 	public static final String ID = "uk.ac.bham.cs.sdsts.view";

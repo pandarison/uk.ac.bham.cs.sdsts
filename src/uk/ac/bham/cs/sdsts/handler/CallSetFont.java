@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import uk.ac.bham.cs.sdsts.common.ModelManager;
+import uk.ac.bham.cs.sdsts.Model.ModelManager;
 import uk.ac.bham.cs.sdsts.editor.AlloyEditor;
 
 public class CallSetFont extends AbstractHandler {

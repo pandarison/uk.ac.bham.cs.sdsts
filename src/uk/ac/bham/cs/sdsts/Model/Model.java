@@ -1,4 +1,4 @@
-package uk.ac.bham.cs.sdsts.common;
+package uk.ac.bham.cs.sdsts.Model;
 
 public abstract class Model {
 	

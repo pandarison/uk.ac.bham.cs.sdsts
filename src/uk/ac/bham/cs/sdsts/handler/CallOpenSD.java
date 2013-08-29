@@ -11,8 +11,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import uk.ac.bham.cs.sdsts.View;
-import uk.ac.bham.cs.sdsts.common.ModelManager;
-import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
+import uk.ac.bham.cs.sdsts.Model.ModelManager;
+import uk.ac.bham.cs.sdsts.Model.SequenceDiagram;
 
 public class CallOpenSD extends AbstractHandler {
 

@@ -17,6 +17,10 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: 
  org.eclipse.papyrus.editor,
+ org.eclipse.papyrus.uml.diagram.sequence,
+ org.eclipse.papyrus.uml.diagram.sequence.edit.parts,
+ org.eclipse.papyrus.uml.diagram.sequence.part,
+ org.eclipse.papyrus.uml.diagram.sequence.providers,
  org.eclipse.ui.part
 Bundle-ClassPath: lib/alloy4.2.jar,
  src/

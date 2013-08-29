@@ -13,8 +13,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.papyrus.editor.PapyrusMultiDiagramEditor;
 
 import uk.ac.bham.cs.sdsts.SDConsole;
-import uk.ac.bham.cs.sdsts.common.ModelManager;
-import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
+import uk.ac.bham.cs.sdsts.Model.ModelManager;
+import uk.ac.bham.cs.sdsts.Model.SequenceDiagram;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.cs.sdsts.core.synthesis.Xml2obj;
 import uk.ac.bham.cs.sdsts.editor.AlloyEditor;

@@ -10,8 +10,6 @@ import org.eclipse.uml2.uml.InteractionOperatorKind;
 import org.eclipse.uml2.uml.Message;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
 import org.eclipse.uml2.uml.internal.impl.CombinedFragmentImpl;
-import org.eclipse.uml2.uml.internal.impl.IntervalImpl;
-
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;
 import uk.ac.bham.cs.sdsts.Alloy.AFact;
 

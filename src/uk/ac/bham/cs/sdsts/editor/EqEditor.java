@@ -37,11 +37,8 @@ import org.eclipse.uml2.uml.internal.impl.LifelineImpl;
 import org.eclipse.uml2.uml.internal.impl.MessageImpl;
 
 import uk.ac.bham.cs.sdsts.View;
-import uk.ac.bham.cs.sdsts.common.Equality;
-import uk.ac.bham.cs.sdsts.common.Model;
-import uk.ac.bham.cs.sdsts.common.ModelManager;
-import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
 import uk.ac.bham.cs.sdsts.core.synthesis.Xml2obj;
+import uk.ac.bham.cs.sdsts.Model.*;
 
 @SuppressWarnings("restriction")
 public class EqEditor extends EditorPart {

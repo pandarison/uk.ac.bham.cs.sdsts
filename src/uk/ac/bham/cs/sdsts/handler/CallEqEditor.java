@@ -16,8 +16,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.IDE;
 
 import uk.ac.bham.cs.sdsts.View;
-import uk.ac.bham.cs.sdsts.common.Equality;
-import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
+import uk.ac.bham.cs.sdsts.Model.Equality;
+import uk.ac.bham.cs.sdsts.Model.SequenceDiagram;
 import uk.ac.bham.cs.sdsts.editor.EqEditor;
 import uk.ac.bham.cs.sdsts.editor.EqEditorInput;
 

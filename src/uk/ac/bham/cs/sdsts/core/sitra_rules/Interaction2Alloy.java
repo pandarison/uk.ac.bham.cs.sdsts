@@ -1,14 +1,10 @@
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.eclipse.uml2.uml.CombinedFragment;
 import org.eclipse.uml2.uml.Interaction;
 import org.eclipse.uml2.uml.InteractionFragment;
 import org.eclipse.uml2.uml.Lifeline;
-import org.eclipse.uml2.uml.Message;
-import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
 import org.eclipse.uml2.uml.internal.impl.InteractionImpl;
 
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;

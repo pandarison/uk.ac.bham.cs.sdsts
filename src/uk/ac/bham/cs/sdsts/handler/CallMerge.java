@@ -13,10 +13,10 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import uk.ac.bham.cs.sdsts.SDConsole;
-import uk.ac.bham.cs.sdsts.common.Equality;
-import uk.ac.bham.cs.sdsts.common.Model;
-import uk.ac.bham.cs.sdsts.common.ModelManager;
-import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
+import uk.ac.bham.cs.sdsts.Model.Equality;
+import uk.ac.bham.cs.sdsts.Model.Model;
+import uk.ac.bham.cs.sdsts.Model.ModelManager;
+import uk.ac.bham.cs.sdsts.Model.SequenceDiagram;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.cs.sdsts.core.synthesis.Xml2obj;
 

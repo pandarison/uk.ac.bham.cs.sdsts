@@ -30,7 +30,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
-import uk.ac.bham.cs.sdsts.common.ModelManager;
+import uk.ac.bham.cs.sdsts.Model.ModelManager;
 
 import edu.mit.csail.sdg.alloy4.Util;
 

@@ -1,7 +1,5 @@
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.uml2.uml.InteractionFragment;
 import org.eclipse.uml2.uml.Lifeline;
 import org.eclipse.uml2.uml.internal.impl.LifelineImpl;
 

@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.papyrus.infra.core.extension.commands.ICreationCommand;
 import org.eclipse.papyrus.infra.core.utils.DiResourceSet;
@@ -31,8 +30,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import uk.ac.bham.cs.sdsts.View;
-import uk.ac.bham.cs.sdsts.common.ModelManager;
-import uk.ac.bham.cs.sdsts.common.SequenceDiagram;
+import uk.ac.bham.cs.sdsts.Model.ModelManager;
+import uk.ac.bham.cs.sdsts.Model.SequenceDiagram;
 
 
 @SuppressWarnings({ "deprecation" })
