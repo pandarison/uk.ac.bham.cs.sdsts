@@ -31,13 +31,24 @@ public class AlloyModel {
 		_facts.put(fact.toString(), fact);
 		return _facts.get(fact.toString());
 	}
-	
+	public void removeFact(String format, Object... args){
+		AFact fact = new AFact(format, args);
+		_facts.remove(fact.toString());
+	}
+	public boolean existSig(String name){
+		if(_sigs.containsKey(name))
+			return true;
+		return false;
+	}
 	public ASig getSig(String name){
 		if(!_sigs.containsKey(name)){
 			ASig sig = new ASig(name, AAttr.ONE, null);
 			_sigs.put(name, sig);
 		}
 		return _sigs.get(name);
+	}
+	public void removeSig(String name){
+		_sigs.remove(name);
 	}
 	
 	public String getSD(){
@@ -132,8 +143,7 @@ public class AlloyModel {
 			ASig lifeline1Sig = this.getSig(lifeline1.split(":")[0]);
 			ASig lifeline2Sig = this.getSig(lifeline2.split(":")[0]);
 			
-			// make lifeline2 to lone
-			lifeline2Sig.set_attr(AAttr.LONE);
+			
 
 			// add fact
 			// all SD1L:SD1_Lifeline_1 , SD2L:SD2_Lifeline_2 | SD1L.name = SD2L.name && SD1L.type = SD2L.type
@@ -142,6 +152,9 @@ public class AlloyModel {
 			//AlloyModel.getInstance().addFact(String.format("# %s = 0", lifeline2Sig.get_name())).zone = "hidden";
 			
 			lifeline2Sig.mergeTo(lifeline1Sig);
+			
+			// make lifeline2 to lone
+			lifeline2Sig.set_attr(AAttr.LONE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

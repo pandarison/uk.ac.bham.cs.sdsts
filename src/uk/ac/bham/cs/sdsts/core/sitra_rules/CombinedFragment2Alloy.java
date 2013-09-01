@@ -2,14 +2,22 @@ package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.uml2.uml.CombinedFragment;
+import org.eclipse.uml2.uml.InteractionConstraint;
 import org.eclipse.uml2.uml.InteractionFragment;
 import org.eclipse.uml2.uml.InteractionOperand;
 import org.eclipse.uml2.uml.InteractionOperatorKind;
+import org.eclipse.uml2.uml.LiteralString;
 import org.eclipse.uml2.uml.Message;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
+import org.eclipse.uml2.uml.Stereotype;
 import org.eclipse.uml2.uml.internal.impl.CombinedFragmentImpl;
+import org.eclipse.uml2.uml.internal.impl.InteractionOperandImpl;
+import org.eclipse.uml2.uml.internal.impl.UMLFactoryImpl;
+
+import uk.ac.bham.cs.sdsts.SDConsole;
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;
 import uk.ac.bham.cs.sdsts.Alloy.AFact;
 
@@ -17,6 +25,7 @@ import uk.ac.bham.cs.sdsts.Alloy.ASig;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.sitra.Rule;
 import uk.ac.bham.sitra.RuleNotFoundException;
+import uk.ac.bham.sitra.SimpleTransformerImpl;
 import uk.ac.bham.sitra.Transformer;
 
 @SuppressWarnings({ "rawtypes", "restriction" })
@@ -30,6 +39,7 @@ public class CombinedFragment2Alloy implements Rule {
 			return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object build(Object source, Transformer t) {
 		try {
@@ -53,6 +63,7 @@ public class CombinedFragment2Alloy implements Rule {
 			combinedFragmentAbstract.AddField("COVER", operandAbstract.setOf());
 			combinedFragmentAbstract.AddField("TYPE", combinedFragmentType.oneOf());
 			combinedFragmentAbstract.zone = "Abstract";
+			
 			
 			// add existence to SD
 			ASig SD = AlloyModel.getInstance().getSig("_SD_");
@@ -85,38 +96,60 @@ public class CombinedFragment2Alloy implements Rule {
 			
 			// Relations among operands
 			for (InteractionOperand interactionOperand : combinedFragment.getOperands()) {
-				interactionOperand.setName(combinedFragment.getName() + "_" + interactionOperand.getName());
-				ASig interactionOperandSig = (ASig) t.transform(interactionOperand);
-				// Fact Combined Fragment covers Operand
-				AlloyModel.getInstance().addFact("%s in %s.COVER", interactionOperandSig, combinedFragmentSig).zone = "Covering: Combined Fragment->Operand";
-				
-				// Special for ALT
-				if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.ALT_LITERAL){
-					interactionOperandSig.set_attr(AAttr.LONE);
-					for (Message message : getMessagesInOperand(interactionOperand)) {
-						ASig messageSig = AlloyModel.getInstance().getSig(currentSD_ + message.getName());
-						messageSig.set_attr(AAttr.LONE);
-						AlloyModel.getInstance().addFact("#%s=#%s", messageSig, interactionOperandSig).zone = "Number: Message = Operand";
+				if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.LOOP_LITERAL){
+					InteractionConstraint timesConstraint = combinedFragment.getOperand(null).getGuard();
+					String specification = timesConstraint.getSpecification().toString();
+					String times = specification.substring(specification.indexOf("value: "));
+					times = times.substring(times.indexOf(":")+2);
+					times = times.substring(0, times.indexOf(")"));
+					try {
+						int timeInt = Integer.parseInt(times);
+						
+						String tmpName = combinedFragment.getName() + "_" + interactionOperand.getName();
+						for (int i = 1; i <= timeInt; i++) {
+						    
+							ASig interactionOperandSig = (ASig) t.transform(interactionOperand);
+							//ASig interactionOperandSig = (ASig) t.transform(interactionOperand);
+							// Fact Combined Fragment covers Operand
+							AlloyModel.getInstance().addFact("%s in %s.COVER", interactionOperandSig, combinedFragmentSig).zone = "Covering: Combined Fragment->Operand";
+							
+						}
+					} catch (Exception e) {
+						SDConsole.print_has_time("Error: invalid characters in Loop definition. It must be a number.");
+						return null;
+					}
+					
+				}else{
+					interactionOperand.setName(combinedFragment.getName() + "_" + interactionOperand.getName());
+					ASig interactionOperandSig = (ASig) t.transform(interactionOperand);
+					// Fact Combined Fragment covers Operand
+					AlloyModel.getInstance().addFact("%s in %s.COVER", interactionOperandSig, combinedFragmentSig).zone = "Covering: Combined Fragment->Operand";
+					
+					// Special for ALT
+					if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.ALT_LITERAL){
+						interactionOperandSig.set_attr(AAttr.LONE);
+						for (Message message : getMessagesInOperand(interactionOperand)) {
+							ASig messageSig = AlloyModel.getInstance().getSig(currentSD_ + message.getName());
+							messageSig.set_attr(AAttr.LONE);
+							AlloyModel.getInstance().addFact("#%s=#%s", messageSig, interactionOperandSig).zone = "Number: Message = Operand";
+						}
 					}
 				}
 			}
+		
 			/**
 			***  Constraint: Combined Fragment
 			**/
-			// only one Operand can interact with fragment outside the CF
-			AlloyModel.getInstance().addFact("// only one Operand can interact with fragment outside the CF\nfact{all _CF: COMBINEDFRAGMENT, _OP2: OPERAND | lone _OP1: _CF.COVER | some _E: _OP1.COVER | all _E1: _OP1.COVER | ((_E in _OP2.COVER.BEFORE or _OP2.COVER in _E.BEFORE) and _OP2 !in _CF.COVER) or #_E1.BEFORE=0 }").zone = "Constraint: Combined Fragment";
-			// order before CF and other Fragment
-			AlloyModel.getInstance().addFact("// order before CF and other Fragment\nfact{all _CF: COMBINEDFRAGMENT, _E1: _CF.COVER.COVER, _E2: EVENT | (_CF in _E2.BEFORE and _E1.COVER=_E2.COVER ) =>_E1 in _E2.^BEFORE}").zone = "Constraint: Combined Fragment";
-			// if one fragment has relation with CF, then its event has relation with CF's events
-			AlloyModel.getInstance().addFact("// if one fragment has relation with CF, then its event has relation with CF's events\nfact{all _E1: EVENT, _CF: COMBINEDFRAGMENT, _E2: EVENT| _CF in _E1.BEFORE => not (_E2 in _E1.BEFORE and _E2 !in _CF.COVER.COVER and _E2.COVER=_E1.COVER)}").zone = "Constraint: Combined Fragment";
-			// shouldn't be before its children
-			AlloyModel.getInstance().addFact("// shouldn't be before its children\nfact{all _CF: COMBINEDFRAGMENT | no _E: _CF.COVER.COVER |  _CF in _E.BEFORE or _E in _CF.BEFORE}\nfact{all _OP: OPERAND | _OP !in _OP.COVER.COVER}").zone = "Constraint: Combined Fragment";
-			// one Operand can interact with at most One other Operand
-			AlloyModel.getInstance().addFact("// one Operand can interact with at most One other Operand\nfact{all _CF: COMBINEDFRAGMENT, _OP1: _CF.COVER, _OP2: _CF.COVER, _E1: _OP1.COVER,_E2: _OP2.COVER, _E3: _OP1.COVER | no _E4: _OP2.COVER | _OP1 != _OP2 and _E2 in _E1.BEFORE and _E3 in _E4.BEFORE  }").zone = "Constraint: Combined Fragment";
-			// all CF can have at most one Next and can be Next of at most one Fragment
-			AlloyModel.getInstance().addFact("// all CF can have at most one Next and can be Next of at most one Fragment\nfact{all _CF: COMBINEDFRAGMENT | all _L: LIFELINE | lone _E: EVENT | _E.COVER=_L and _CF in _E.BEFORE}\nfact{all _CF: COMBINEDFRAGMENT | all _L: LIFELINE | lone _E: EVENT | _E.COVER=_L and _CF in _E.BEFORE}").zone = "Constraint: Combined Fragment";
-			// all CF have no relation with Lifeline which it does not cover
-			AlloyModel.getInstance().addFact("// all CF have no relation with Lifeline which it does not cover\nfact{all _E: EVENT | all _CF: COMBINEDFRAGMENT | some _E1: EVENT | (_E in _CF.BEFORE or _CF in _E.BEFORE) => (_E1.COVER = _E.COVER and _E1 in _CF.COVER.COVER)}").zone = "Constraint: Combined Fragment";
+			// Combined Fragments have no relation of "BEFORE"
+			AlloyModel.getInstance().addFact("// Combined Fragments have no relation of BEFORE\nfact{all _CF: COMBINEDFRAGMENT | no _F: FRAGMENT | _CF in _F.BEFORE or _F in _CF.BEFORE}").zone = "Constraint: Combined Fragment";
+			// OPERAND: in one OP, at most one event for each lifeline can have no Next
+			AlloyModel.getInstance().addFact("// OPERAND: in one OP, at most one event for each lifeline can have no Next\nfact{all _L: LIFELINE, _OP: OPERAND | lone _E: EVENT | _E in _OP.COVER and _E.COVER=_L and #_E.BEFORE=0}").zone = "Constraint: Combined Fragment";
+			// OPERAND: the children can not cover their parent
+			AlloyModel.getInstance().addFact("// OPERAND: the children can not cover their parent\nfact{all _OP: OPERAND | _OP !in _OP.^(COVER.COVER)}").zone = "Constraint: Combined Fragment";
+			// OPERAND: one OP can not be before and after the same other OP
+			AlloyModel.getInstance().addFact("// OPERAND: one OP can not be before and after the same other OP\nfact{all _CF: COMBINEDFRAGMENT, _OP1: _CF.COVER, _OP2: _CF.COVER, _E1: _OP1.COVER,_E2: _OP2.COVER, _E3: _OP1.COVER | no _E4: _OP2.COVER | _OP1 != _OP2 and _E2 in _E1.BEFORE and _E3 in _E4.BEFORE}").zone = "Constraint: Combined Fragment";
+			// one CF should be covered by at most one Operand
+			AlloyModel.getInstance().addFact("// one CF should be covered by at most one Operand\nfact{all _F: FRAGMENT  | lone _OP: OPERAND | _F in _OP.COVER}\nfact{all _OP: OPERAND | lone _F: COMBINEDFRAGMENT | _OP in _F.COVER}").zone = "Constraint: Combined Fragment";
 			if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.ALT_LITERAL)
 				AlloyModel.getInstance().addFact("// alt: exact one operand will be executed\nfact{all _CF: COMBINEDFRAGMENT | (_CF.TYPE = CF_TYPE_ALT) => #_CF.COVER = 1}").zone = "Constraint: Combined Fragment";
 		} catch (RuleNotFoundException e) {

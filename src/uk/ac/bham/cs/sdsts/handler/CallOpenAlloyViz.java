@@ -162,12 +162,12 @@ public class CallOpenAlloyViz extends AbstractHandler {
 										OurDialog.alert("No more satisfying instances.");
 										return null;
 								}
-								
-								ans.writeXML("alloy_example_output.xml");
-								viz.loadXML("alloy_example_output.xml", true);
+								String filename = System.currentTimeMillis() + "_alloy_example_output.xml";
+								ans.writeXML(filename);
+								viz.loadXML(filename, true);
 								return (String) input;
 							}
-						}, evaluator);
+						}, evaluator, false);
                         //viz = new VizGUI(false, "alloy_example_output.xml", null);
                     } else {
                         viz.loadXML("alloy_example_output.xml", true);

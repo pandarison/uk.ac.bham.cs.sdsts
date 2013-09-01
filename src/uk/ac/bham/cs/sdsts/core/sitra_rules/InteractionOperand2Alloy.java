@@ -43,10 +43,10 @@ public class InteractionOperand2Alloy implements Rule {
 		OperandSig.zone = "Operand";
 		
 		// iterate messages
+		ASig combinedFragmentAbstract = AlloyModel.getInstance().getSig("COMBINEDFRAGMENT");
 		ArrayList<Message> messages = new ArrayList<Message>();
 		HashMap<String, ASig> lastElementOnLifeline = new HashMap<String, ASig>();
 		for (InteractionFragment interactionFragment : interactionOperand.getFragments()) {
-			
 			if(interactionFragment instanceof MessageOccurrenceSpecification){
 				MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
 				if(!messages.contains(event.getMessage())){
@@ -63,7 +63,12 @@ public class InteractionOperand2Alloy implements Rule {
 				for (Lifeline lifeline : interactionFragment.getCovereds()) {
 					ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
 					if(lastElementOnLifeline.containsKey(lifeline.getName())){
-						AlloyModel.getInstance().addFact("%s in %s.BEFORE", fragmentSig, lastElementOnLifeline.get(lifeline.getName())).zone = "Ordering";
+						ASig lastElement = lastElementOnLifeline.get(lifeline.getName());
+						if(lastElement.get_parent().equals(combinedFragmentAbstract)){
+							AlloyModel.getInstance().addFact("all _L:%s, _E1:%s.COVER.COVER, _E2:%s | _E1.COVER=_L => _E2 in _E1.^BEFORE", AlloyModel.getInstance().getSig(currentSD_ + lifeline.getName()), lastElement, fragmentSig).zone = "Ordering";
+						}
+						else
+							AlloyModel.getInstance().addFact("%s in %s.BEFORE", fragmentSig, lastElement).zone = "Ordering";
 					}
 					lastElementOnLifeline.put(lifeline.getName(), fragmentSig);
 				}
@@ -73,7 +78,12 @@ public class InteractionOperand2Alloy implements Rule {
 				for (Lifeline lifeline : interactionFragment.getCovereds()) {
 					ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
 					if(lastElementOnLifeline.containsKey(lifeline.getName())){
-						AlloyModel.getInstance().addFact("%s in %s.BEFORE", fragmentSig, lastElementOnLifeline.get(lifeline.getName())).zone = "Ordering";
+						ASig lastElement = lastElementOnLifeline.get(lifeline.getName());
+						if(lastElement.get_parent().equals(combinedFragmentAbstract)){
+							AlloyModel.getInstance().addFact("all _L:%s, _E1:%s.COVER.COVER, _E2:%s.COVER.COVER | _E1.COVER=_L and _E2.COVER=_L => _E2 in _E1.^BEFORE", AlloyModel.getInstance().getSig(currentSD_ + lifeline.getName()), lastElement, fragmentSig).zone = "Ordering";
+						}
+						else
+							AlloyModel.getInstance().addFact("all _L:%s, _E1:%s, _E2:%s.COVER.COVER | _E2.COVER=_L => _E2 in _E1.^BEFORE", AlloyModel.getInstance().getSig(currentSD_ + lifeline.getName()), lastElement, fragmentSig).zone = "Ordering";
 					}
 					lastElementOnLifeline.put(lifeline.getName(), fragmentSig);
 				}
@@ -85,7 +95,7 @@ public class InteractionOperand2Alloy implements Rule {
 				}
 			}
 			ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
-			AlloyModel.getInstance().addFact("all _F: %s | _F in %s.COVER", fragmentSig, OperandSig).zone = "Covering: Operand->Fragment";
+			AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*(COVER.COVER).COVER", fragmentSig, OperandSig).zone = "Covering: Operand->Fragment";
 		}
 		return OperandSig;
 	}

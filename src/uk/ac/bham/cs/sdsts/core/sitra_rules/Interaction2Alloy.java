@@ -1,10 +1,14 @@
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.uml2.uml.CombinedFragment;
 import org.eclipse.uml2.uml.Interaction;
 import org.eclipse.uml2.uml.InteractionFragment;
 import org.eclipse.uml2.uml.Lifeline;
+import org.eclipse.uml2.uml.Message;
+import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
 import org.eclipse.uml2.uml.internal.impl.InteractionImpl;
 
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;
@@ -58,29 +62,62 @@ public class Interaction2Alloy implements Rule{
 		
 		// create signature for SD
 		ASig SD = AlloyModel.getInstance().getSig(currentSD);
-		SD.set_attr(AAttr.ONE).set_parent(OperandAbstract);
+		SD.set_attr(AAttr.LONE).set_parent(OperandAbstract);
 		SD.zone = "SD";
+		AlloyModel.getInstance().addFact(String.format("#%s = 0", SD.get_name())).zone = "Glue";
 		
 		SD.mergeTo(_SD_);
+		_SD_.set_attr(AAttr.ONE);
 		
 		// iterate messages
+		ASig combinedFragmentAbstract = null;//AlloyModel.getInstance().getSig("COMBINEDFRAGMENT");
 		HashMap<String, ASig> lastElementOnLifeline = new HashMap<String, ASig>();
 		for (InteractionFragment interactionFragment : interaction.getFragments()) {
-			for (Lifeline lifeline : interactionFragment.getCovereds()) {
-				ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
-				if(lastElementOnLifeline.containsKey(lifeline.getName())){
-					AlloyModel.getInstance().addFact("%s in %s.BEFORE", fragmentSig, lastElementOnLifeline.get(lifeline.getName())).zone = "Ordering";
+			if(interactionFragment instanceof MessageOccurrenceSpecification){
+				for (Lifeline lifeline : interactionFragment.getCovereds()) {
+					ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
+					if(lastElementOnLifeline.containsKey(lifeline.getName())){
+						ASig lastElement = lastElementOnLifeline.get(lifeline.getName());
+						if(lastElement.get_parent().equals(combinedFragmentAbstract)){
+							AlloyModel.getInstance().addFact("all _L:%s, _E1:%s.COVER.COVER, _E2:%s | _E1.COVER=_L => _E2 in _E1.^BEFORE", AlloyModel.getInstance().getSig(currentSD_ + lifeline.getName()), lastElement, fragmentSig).zone = "Ordering";
+						}
+						else
+							AlloyModel.getInstance().addFact("%s in %s.BEFORE", fragmentSig, lastElement).zone = "Ordering";
+					}
+					lastElementOnLifeline.put(lifeline.getName(), fragmentSig);
 				}
-				lastElementOnLifeline.put(lifeline.getName(), fragmentSig);
+			}
+			if(interactionFragment instanceof CombinedFragment){
+				combinedFragmentAbstract = AlloyModel.getInstance().getSig("COMBINEDFRAGMENT");
+				for (Lifeline lifeline : interactionFragment.getCovereds()) {
+					ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
+					if(lastElementOnLifeline.containsKey(lifeline.getName())){
+						ASig lastElement = lastElementOnLifeline.get(lifeline.getName());
+						if(lastElement.get_parent().equals(combinedFragmentAbstract)){
+							AlloyModel.getInstance().addFact("all _L:%s, _E1:%s.COVER.COVER, _E2:%s.COVER.COVER | _E1.COVER=_L and _E2.COVER=_L => _E2 in _E1.^BEFORE", AlloyModel.getInstance().getSig(currentSD_ + lifeline.getName()), lastElement, fragmentSig).zone = "Ordering";
+						}
+						else
+							AlloyModel.getInstance().addFact("all _L:%s, _E1:%s, _E2:%s.COVER.COVER | _E2.COVER=_L => _E2 in _E1.^BEFORE", AlloyModel.getInstance().getSig(currentSD_ + lifeline.getName()), lastElement, fragmentSig).zone = "Ordering";
+					}
+					lastElementOnLifeline.put(lifeline.getName(), fragmentSig);
+				}
+				try {
+					t.transform(interactionFragment);
+				} catch (RuleNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
-			AlloyModel.getInstance().addFact("all _F: %s | _F in %s.COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
+			if(AlloyModel.getInstance().existSig("COMBINEDFRAGMENT"))
+				AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*(COVER.COVER).COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
+			else AlloyModel.getInstance().addFact("all _F: %s | _F in %s.COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
 		}
 		/**
 		***  Constraint: Fragment
 		**/
 		AlloyModel.getInstance().addFact("// no circle\nfact{all _F: FRAGMENT  | _F !in _F.^BEFORE}").zone = "Constraint: Fragment";
-		AlloyModel.getInstance().addFact("// should be covered by at most one Operand\nfact{all _F: FRAGMENT  | lone _OP: OPERAND | _F in _OP.COVER}").zone = "Constraint: Fragment";
+		
 		return null;
 	}
 
