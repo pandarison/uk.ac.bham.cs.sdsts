@@ -68,7 +68,7 @@ public class InteractionOperand2Alloy implements Rule {
 							AlloyModel.getInstance().addFact("all _L:%s, _E1:%s.COVER.COVER, _E2:%s | _E1.COVER=_L => _E2 in _E1.^BEFORE", AlloyModel.getInstance().getSig(currentSD_ + lifeline.getName()), lastElement, fragmentSig).zone = "Ordering";
 						}
 						else
-							AlloyModel.getInstance().addFact("%s in %s.BEFORE", fragmentSig, lastElement).zone = "Ordering";
+							AlloyModel.getInstance().addFact("%s in %s.^BEFORE", fragmentSig, lastElement).zone = "Ordering";
 					}
 					lastElementOnLifeline.put(lifeline.getName(), fragmentSig);
 				}

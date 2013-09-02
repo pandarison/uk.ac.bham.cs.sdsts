@@ -167,7 +167,7 @@ public class CallOpenAlloyViz extends AbstractHandler {
 								viz.loadXML(filename, true);
 								return (String) input;
 							}
-						}, evaluator, false);
+						}, evaluator);
                         //viz = new VizGUI(false, "alloy_example_output.xml", null);
                     } else {
                         viz.loadXML("alloy_example_output.xml", true);
