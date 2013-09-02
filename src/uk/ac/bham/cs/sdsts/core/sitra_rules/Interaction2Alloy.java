@@ -111,7 +111,7 @@ public class Interaction2Alloy implements Rule{
 			ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
 			if(AlloyModel.getInstance().existSig("COMBINEDFRAGMENT"))
 				AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*(COVER.COVER).COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
-			else AlloyModel.getInstance().addFact("all _F: %s | _F in %s.COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
+			else AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
 		}
 		/**
 		***  Constraint: Fragment
