@@ -45,6 +45,17 @@ public class SDConsole {
 		getConsoleStram().println("****************************************************************************************");
 		flush();
 	}
+	private static String string = "";
+	public static void print_has_time_newThread(String str){
+		string = str;
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				SDConsole.print_has_time(string);
+			}
+		};
+		new Thread(runnable).start();
+	}
 	public static MessageConsoleStream getConsoleStram() {
 		if(stream != null){
 			return stream;

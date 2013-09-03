@@ -72,6 +72,8 @@ public class Interaction2Alloy implements Rule{
 		// iterate messages
 		ASig combinedFragmentAbstract = null;//AlloyModel.getInstance().getSig("COMBINEDFRAGMENT");
 		HashMap<String, ASig> lastElementOnLifeline = new HashMap<String, ASig>();
+		ArrayList<ASig> CFs = new ArrayList<ASig>();
+		ArrayList<ASig> nonCFs = new ArrayList<ASig>();
 		for (InteractionFragment interactionFragment : interaction.getFragments()) {
 			if(interactionFragment instanceof MessageOccurrenceSpecification){
 				for (Lifeline lifeline : interactionFragment.getCovereds()) {
@@ -112,6 +114,17 @@ public class Interaction2Alloy implements Rule{
 			if(AlloyModel.getInstance().existSig("COMBINEDFRAGMENT"))
 				AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*(COVER.COVER).COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
 			else AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
+			if(interactionFragment instanceof CombinedFragment)CFs.add(fragmentSig);
+			if(interactionFragment instanceof MessageOccurrenceSpecification)nonCFs.add(fragmentSig);
+		}
+		for (ASig aSig : CFs) {
+			for (ASig aSig1 : CFs) {
+				if(aSig1.equals(aSig))continue;
+				AlloyModel.getInstance().addFact("all _F: %s | _F !in %s.^(COVER.COVER)", aSig1, aSig).zone = "Covering: Operand->Fragment";
+			}
+			for (ASig aSig2 : nonCFs) {
+				AlloyModel.getInstance().addFact("all _F: %s | _F !in %s.^(COVER.COVER)", aSig2, aSig).zone = "Covering: Operand->Fragment";
+			}
 		}
 		/**
 		***  Constraint: Fragment

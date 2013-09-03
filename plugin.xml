@@ -98,10 +98,6 @@
                   label="Select all"
                   style="push">
             </command>
-            <command
-                  commandId="uk.ac.bham.cs.sdsts.test"
-                  style="push">
-            </command>
          </menu>
          <menu
                label="Tool">

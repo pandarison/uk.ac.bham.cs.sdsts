@@ -79,18 +79,7 @@ public class CallOpenAlloyViz extends AbstractHandler {
 			writer.write(result);
 			writer.flush();
 			writer.close();
-			Runnable newThread = new Runnable() {
-				@Override
-				public void run() {
-					try {
-						openAlloyWiz(new String[]{iFile.getLocation().toString()});
-					} catch (Err e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			};
-			new Thread(newThread).start();
+			getWorld(iFile.getLocation().toString());
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -103,27 +92,23 @@ public class CallOpenAlloyViz extends AbstractHandler {
 	public static int count = 0;
 	public static int current = 1;
 	public static uk.ac.bham.cs.sdsts.handler.SimpleGUI simpleGUI;
-	public static void openAlloyWiz(String[] args) throws Err {
-
-
-        // Alloy4 sends diagnostic messages and progress reports to the A4Reporter.
+	private static  A4Reporter rep = null;
+	private static Module world = null;
+	public static void getWorld(String filename){
+		// Alloy4 sends diagnostic messages and progress reports to the A4Reporter.
         // By default, the A4Reporter ignores all these events (but you can extend the A4Reporter to display the event for the user)
-        A4Reporter rep = new A4Reporter() {
+        rep = new A4Reporter() {
             // For example, here we choose to display each "warning" by printing it to System.out
             @Override public void warning(ErrorWarning msg) {
                 System.out.print("Relevance Warning:\n"+(msg.toString().trim())+"\n\n");
                 System.out.flush();
             }
         };
-
-        for(String filename:args) {
-
-            // Parse+typecheck the model
-           // System.out.println("=========== Parsing+Typechecking "+filename+" =============");
-        	SDConsole.print_has_time("Parsing and Typechecking Alloy Model.");
-        	Module world = null;
-        	try {
-        		  world = CompUtil.parseEverything_fromFile(rep, null, filename);
+		 // Parse+typecheck the model
+        // System.out.println("=========== Parsing+Typechecking "+filename+" =============");
+     	SDConsole.print_has_time("Parsing and Typechecking Alloy Model.");
+     	try {
+     		  world = CompUtil.parseEverything_fromFile(rep, null, filename);
 			} catch (Err e) {
 				SDConsole.print_has_time(e.msg + "\n" +  e.pos.toString().subSequence(0, e.pos.toString().indexOf("filename")-2));
 				String tmpString = e.pos.toString().subSequence(0, e.pos.toString().indexOf("filename")-2).toString();
@@ -133,9 +118,22 @@ public class CallOpenAlloyViz extends AbstractHandler {
 				tmpString = tmpString.substring(tmpString.indexOf(" "));
 				AlloyEditor.coloraLineColumn(Integer.parseInt(firstNum), e.pos.x, e.pos.x2);
 				//AlloyEditor.coloraLineColumn(Integer.parseInt(firstNum), e.pos.x, e.pos.x2 - e.pos.x);
+				return;
 			}
-          
-
+     	Runnable newThread = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					openAlloyWiz();
+				} catch (Err e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		};
+		new Thread(newThread).start();
+	}
+	public static void openAlloyWiz() throws Err {
             // Choose some default options for how you want to execute the commands
             A4Options options = new A4Options();
             options.solver = A4Options.SatSolver.SAT4J;
@@ -144,10 +142,11 @@ public class CallOpenAlloyViz extends AbstractHandler {
             for (Command command: world.getAllCommands()) {
                 // Execute the command
                 //System.out.println("============ Command "+command+": ============");
+            	SDConsole.print_has_time("SAT-Solver: solving...");
                 ans = TranslateAlloyToKodkod.execute_command(rep, world.getAllReachableSigs(), command, options);
                 // Print the outcome
                 //System.out.println(ans);
-                SDConsole.print_has_time(ans.toString());
+                //SDConsole.print_has_time(ans.toString());
                 // If satisfiable...
                 if (ans.satisfiable()) {
                     // You can query "ans" to find out the values of each set or type.
@@ -159,6 +158,7 @@ public class CallOpenAlloyViz extends AbstractHandler {
                 	while(ans.satisfiable()){
 						count++;
 						ans.writeXML(count + "_alloy_example_output.xml");
+						SDConsole.print_has_time(String.format("Founded solution %d", count));
 						ans = ans.next();
 					}
                     
@@ -180,9 +180,11 @@ public class CallOpenAlloyViz extends AbstractHandler {
 						}, evaluator);
                         //viz = new VizGUI(false, "alloy_example_output.xml", null);
                     } 
+                }else{
+                	SDConsole.print_has_time("No such solution!");
                 }
             }
-        }
+        SDConsole.print_stars();
     }
     private static Computer evaluator = new Computer() {
 	        private String filename = null;

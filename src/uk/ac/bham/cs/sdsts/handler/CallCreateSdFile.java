@@ -178,6 +178,7 @@ class MyCreater extends CreateModelWizard{
 			}
 		IPath location = new Path(path);
 		IFile file = project.getFile(location.lastSegment());
+		
 		try {
 			file.delete(true, null);
 		} catch (CoreException e1) {

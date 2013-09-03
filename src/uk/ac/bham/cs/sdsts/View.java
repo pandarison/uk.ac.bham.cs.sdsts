@@ -82,7 +82,6 @@ public class View extends ViewPart {
 		mgr.setRemoveAllWhenShown(true);
 		mgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				System.err.println("R-Clicked");
 				IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 				if (!selection.isEmpty()) {
 					mgr.add(a);

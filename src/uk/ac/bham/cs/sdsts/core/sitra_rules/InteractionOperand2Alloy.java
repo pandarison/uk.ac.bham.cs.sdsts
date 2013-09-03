@@ -46,12 +46,12 @@ public class InteractionOperand2Alloy implements Rule {
 		ASig combinedFragmentAbstract = AlloyModel.getInstance().getSig("COMBINEDFRAGMENT");
 		ArrayList<Message> messages = new ArrayList<Message>();
 		HashMap<String, ASig> lastElementOnLifeline = new HashMap<String, ASig>();
+		ArrayList<ASig> CFs = new ArrayList<ASig>();
+		ArrayList<ASig> nonCFs = new ArrayList<ASig>();
 		for (InteractionFragment interactionFragment : interactionOperand.getFragments()) {
 			if(interactionFragment instanceof MessageOccurrenceSpecification){
 				MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
 				if(!messages.contains(event.getMessage())){
-					String oldNameSend = event.getMessage().getSendEvent().getName();
-					String oldNameRec = event.getMessage().getReceiveEvent().getName();
 					event.getMessage().getSendEvent().setName(interactionOperand.getName() + "_" + event.getMessage().getSendEvent().getName());
 					event.getMessage().getReceiveEvent().setName(interactionOperand.getName() + "_" + event.getMessage().getReceiveEvent().getName());
 					messages.add(event.getMessage());
@@ -96,9 +96,22 @@ public class InteractionOperand2Alloy implements Rule {
 					e.printStackTrace();
 				}
 			}
+			
 			ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
 			AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*(COVER.COVER).COVER", fragmentSig, OperandSig).zone = "Covering: Operand->Fragment";
+			if(interactionFragment instanceof CombinedFragment)CFs.add(fragmentSig);
+			if(interactionFragment instanceof MessageOccurrenceSpecification)nonCFs.add(fragmentSig);
 		}
+		for (ASig aSig : CFs) {
+			for (ASig aSig1 : CFs) {
+				if(aSig1.equals(aSig))continue;
+				AlloyModel.getInstance().addFact("all _F: %s | _F !in %s.^(COVER.COVER)", aSig1, aSig).zone = "Covering: Operand->Fragment";
+			}
+			for (ASig aSig2 : nonCFs) {
+				AlloyModel.getInstance().addFact("all _F: %s | _F !in %s.^(COVER.COVER)", aSig2, aSig).zone = "Covering: Operand->Fragment";
+			}
+		}
+		
 		return OperandSig;
 	}
 
