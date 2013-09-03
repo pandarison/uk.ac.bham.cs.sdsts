@@ -19,11 +19,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import uk.ac.bham.cs.sdsts.SDConsole;
 import uk.ac.bham.cs.sdsts.editor.AlloyEditor;
-
 import edu.mit.csail.sdg.alloy4.A4Reporter;
 import edu.mit.csail.sdg.alloy4.Computer;
 import edu.mit.csail.sdg.alloy4.Err;
@@ -55,12 +52,11 @@ import edu.mit.csail.sdg.alloy4viz.VizGUI;
 
 public class CallOpenAlloyViz extends AbstractHandler {
 
-	@Override
+	public static IFile iFile;
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
 			String result = AlloyEditor.getText();
 			IWorkspace  ws = ResourcesPlugin.getWorkspace();
-			parent_shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 			IProject project = ws.getRoot().getProject("tmp");
 			if (!project.exists())
 				try {
@@ -76,26 +72,37 @@ public class CallOpenAlloyViz extends AbstractHandler {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			IFile iFile = project.getFile(System.currentTimeMillis() + ".als");
+			iFile = project.getFile(System.currentTimeMillis() + ".als");
 			
 			File file = new File(iFile.getLocation().toString());
 			FileWriter writer = new FileWriter(file);
 			writer.write(result);
 			writer.flush();
 			writer.close();
-			openAlloyWiz(new String[]{iFile.getLocation().toString()});
-		} catch (Err e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Runnable newThread = new Runnable() {
+				@Override
+				public void run() {
+					try {
+						openAlloyWiz(new String[]{iFile.getLocation().toString()});
+					} catch (Err e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			};
+			new Thread(newThread).start();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
-	public static Shell parent_shell = null;
 	public static A4Solution ans = null;
 	public static VizGUI viz = null;
+	public static int count = 0;
+	public static int current = 1;
+	public static uk.ac.bham.cs.sdsts.handler.SimpleGUI simpleGUI;
 	public static void openAlloyWiz(String[] args) throws Err {
 
 
@@ -147,36 +154,37 @@ public class CallOpenAlloyViz extends AbstractHandler {
                     // This can be useful for debugging.
                     //
                     // You can also write the outcome to an XML file
-                    ans.writeXML("alloy_example_output.xml");
+                	count = 0;
+                	current = 1;
+                	while(ans.satisfiable()){
+						count++;
+						ans.writeXML(count + "_alloy_example_output.xml");
+						ans = ans.next();
+					}
                     
                     //
                     // You can then visualize the XML file by calling this:
-                    if (viz==null) {
-                    	viz = new VizGUI(false, "alloy_example_output.xml", null, new Computer() {
+                    if (true) {
+                    	viz = new VizGUI(false, current++ + "_alloy_example_output.xml", null, new Computer() {
 							
 							@Override
-							public String compute(Object input) throws Exception {
-								ans = ans.next();
-							
-								if(ans.satisfiable() == false){
+							public String compute(Object input) throws Exception {	
+								if(current > count){
 										OurDialog.alert("No more satisfying instances.");
 										return null;
 								}
-								String filename = System.currentTimeMillis() + "_alloy_example_output.xml";
-								ans.writeXML(filename);
-								viz.loadXML(filename, true);
+								viz.loadXML(current + "_alloy_example_output.xml", false);
+								current ++;
 								return (String) input;
 							}
 						}, evaluator);
                         //viz = new VizGUI(false, "alloy_example_output.xml", null);
-                    } else {
-                        viz.loadXML("alloy_example_output.xml", true);
-                    }
+                    } 
                 }
             }
         }
     }
-	 private static Computer evaluator = new Computer() {
+    private static Computer evaluator = new Computer() {
 	        private String filename = null;
 	        public final String compute(final Object input) throws Exception {
 	            if (input instanceof File) { filename = ((File)input).getAbsolutePath(); return ""; }

@@ -118,7 +118,7 @@ public class Message2Alloy implements Rule{
 		// only allow relation between Events either they are in same message or on same lifeline
 		AlloyModel.getInstance().addFact("// only allow relation between Events either they are in same message or on same lifeline\nfact{all _E1: EVENT, _M: MESSAGE,  _E2: EVENT | (_E1 in _M.SEND and _E2 in _E1.BEFORE) => (_M.RECEIVE=_E2) or (_E1.COVER=_E2.COVER)}\nfact{all _E1: EVENT, _M: MESSAGE,  _E2: EVENT | (_E1 in _M.RECEIVE and _E2 in _E1.BEFORE) => (_E1.COVER=_E2.COVER)}").zone="Constraint: Message";
 		// message cannot be Before/After of others at the same time
-		AlloyModel.getInstance().addFact("// message cannot be Before/After of others at the same time\nfact{all _M1: MESSAGE | no _M2: MESSAGE | (_M1.SEND in _M2.SEND.BEFORE and _M2.RECEIVE in _M1.RECEIVE.BEFORE) or (_M2.SEND in _M1.SEND.BEFORE and _M1.RECEIVE in _M2.RECEIVE.BEFORE)}").zone = "Constraint: Message";
+		AlloyModel.getInstance().addFact("// message cannot be Before/After of others at the same time\nfact{all _M1: MESSAGE | no _M2: MESSAGE | (_M1.SEND in _M2.SEND.^BEFORE and _M2.RECEIVE in _M1.RECEIVE.^BEFORE) or (_M2.SEND in _M1.SEND.^BEFORE and _M1.RECEIVE in _M2.RECEIVE.^BEFORE)}").zone = "Constraint: Message";
 		return messageSig;
 	}
 

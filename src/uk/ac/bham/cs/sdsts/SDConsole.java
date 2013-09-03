@@ -16,6 +16,7 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 public class SDConsole {
+	private static MessageConsoleStream stream = null;
 	public static void clear(){
 		MessageConsole myConsole = findConsole("console");
 		myConsole.clearConsole();
@@ -23,28 +24,32 @@ public class SDConsole {
 	public static void print_has_time(String str){
 		String timeString = new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime());
 		for (String string : str.split("\n")) {
-			getConsoleStram(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()).println(String.format("%s  %s", timeString, string));
+			getConsoleStram().println(String.format("%s  %s", timeString, string));
 			flush();
 			timeString = "        ";
 		}
 	}
 	private static void flush() {
 		try {
-			getConsoleStram(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()).flush();
+			getConsoleStram().flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	public static void print(String str){
-		getConsoleStram(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()).println(str);
+		getConsoleStram().println(str);
 		flush();
 	}
 	public static void print_stars(){
-		getConsoleStram(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()).println("****************************************************************************************");
+		getConsoleStram().println("****************************************************************************************");
 		flush();
 	}
-	public static MessageConsoleStream getConsoleStram(IWorkbenchPage page) {
+	public static MessageConsoleStream getConsoleStram() {
+		if(stream != null){
+			return stream;
+		}
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		MessageConsole myConsole = findConsole("console");
 		MessageConsoleStream out = myConsole.newMessageStream();
 		String id = IConsoleConstants.ID_CONSOLE_VIEW;
@@ -56,6 +61,7 @@ public class SDConsole {
 			e.printStackTrace();
 		}
 		view.display(myConsole);
+		stream = out;
 		return out;
 	}
 

@@ -50,6 +50,8 @@ public class InteractionOperand2Alloy implements Rule {
 			if(interactionFragment instanceof MessageOccurrenceSpecification){
 				MessageOccurrenceSpecification event = (MessageOccurrenceSpecification) interactionFragment;
 				if(!messages.contains(event.getMessage())){
+					String oldNameSend = event.getMessage().getSendEvent().getName();
+					String oldNameRec = event.getMessage().getReceiveEvent().getName();
 					event.getMessage().getSendEvent().setName(interactionOperand.getName() + "_" + event.getMessage().getSendEvent().getName());
 					event.getMessage().getReceiveEvent().setName(interactionOperand.getName() + "_" + event.getMessage().getReceiveEvent().getName());
 					messages.add(event.getMessage());
