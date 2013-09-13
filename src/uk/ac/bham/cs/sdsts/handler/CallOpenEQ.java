@@ -1,3 +1,6 @@
+/***
+ *  Author: Yi Chen
+ */
 package uk.ac.bham.cs.sdsts.handler;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -21,6 +24,7 @@ public class CallOpenEQ extends AbstractHandler {
 	    IWorkbenchPage page = window.getActivePage();
 	    View view = (View) page.findView(View.ID);
 	    
+	    // open dialog to select file
 		FileDialog filedlg = new FileDialog(window.getShell(), SWT.OPEN);
 		
 		filedlg.setText("Select Equality File");
@@ -29,6 +33,7 @@ public class CallOpenEQ extends AbstractHandler {
 		filedlg.setFilterExtensions(new String[]{"eq"});
 		String selected=filedlg.open();
 		
+		// create the model
 		Equality equality = new Equality("");
 		equality.restore(selected);
 		ModelManager.getInstance().AddModel(equality);

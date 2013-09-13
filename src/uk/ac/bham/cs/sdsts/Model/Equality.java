@@ -1,3 +1,6 @@
+/***
+ *  Author: Yi Chen
+ */
 package uk.ac.bham.cs.sdsts.Model;
 
 import java.io.BufferedReader;

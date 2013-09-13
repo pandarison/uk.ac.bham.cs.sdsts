@@ -1,8 +1,12 @@
+/***
+ *  Author: Yi Chen
+ */
 package uk.ac.bham.cs.sdsts.Alloy;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+// Alloy signature
 public class ASig extends AObject{
 	// Name of the signature
 	private String _name;
@@ -61,16 +65,20 @@ public class ASig extends AObject{
 		if(this.get_attr() == AAttr.LONE)sig.set_attr(AAttr.LONE);
 		this._this = sig;
 	}
+	
+	// return set this
 	public ASig setOf(){
 		ASig sig = new ASig(_name, _attr, _parent);
 		sig.set_attr(AAttr.SET);
 		return sig;
 	}
+	// return lone this
 	public ASig loneOf(){
 		ASig sig = new ASig(_name, _attr, _parent);
 		sig.set_attr(AAttr.LONE);
 		return sig;
 	}
+	// return one this
 	public ASig oneOf(){
 		ASig sig = new ASig(_name, _attr, _parent);
 		sig.set_attr(AAttr.ONE);

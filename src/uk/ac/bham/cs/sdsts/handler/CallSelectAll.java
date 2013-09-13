@@ -1,3 +1,6 @@
+/***
+ *  Author: Yi Chen
+ */
 package uk.ac.bham.cs.sdsts.handler;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -10,6 +13,7 @@ import uk.ac.bham.cs.sdsts.editor.AlloyEditor;
 
 public class CallSelectAll extends AbstractHandler {
 
+	// select all for Alloy editor
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
