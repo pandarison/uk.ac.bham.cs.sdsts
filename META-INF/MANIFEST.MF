@@ -1,11 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: uk.ac.bham.cs.sdsts
-<<<<<<< HEAD
 Bundle-SymbolicName: uk.ac.bham.cs.sdsts;singleton:=true
-=======
-Bundle-SymbolicName: uk.ac.bham.cs.sdstss;singleton:=true
->>>>>>> parent of e3f1d1b... Alloy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: uk.ac.bham.cs.sdsts.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
