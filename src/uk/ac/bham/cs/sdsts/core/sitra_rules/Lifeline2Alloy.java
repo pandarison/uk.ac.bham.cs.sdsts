@@ -1,3 +1,6 @@
+/***
+ *  Author: Yi Chen
+ */
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 import org.eclipse.uml2.uml.Lifeline;

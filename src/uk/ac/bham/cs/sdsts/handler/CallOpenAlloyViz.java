@@ -1,3 +1,7 @@
+/***
+ *  Author: Yi Chen
+ *  A part of code in this file was copied from Alloy library
+ */
 package uk.ac.bham.cs.sdsts.handler;
 
 import java.io.File;
@@ -91,7 +95,6 @@ public class CallOpenAlloyViz extends AbstractHandler {
 	public static VizGUI viz = null;
 	public static int count = 0;
 	public static int current = 1;
-	public static uk.ac.bham.cs.sdsts.handler.SimpleGUI simpleGUI;
 	private static  A4Reporter rep = null;
 	private static Module world = null;
 	public static void getWorld(String filename){

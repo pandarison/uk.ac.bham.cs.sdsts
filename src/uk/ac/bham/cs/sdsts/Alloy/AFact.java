@@ -1,9 +1,16 @@
+/***
+ *  Author: Yi Chen
+ */
 package uk.ac.bham.cs.sdsts.Alloy;
 
 import java.util.ArrayList;
 
+// Alloy fact
 public class AFact extends AObject{
+	// format string of the fact
 	private String format;
+	
+	// object that involved in the fact
 	private Object[] args;
 	
 	public AFact(String format, Object... args){

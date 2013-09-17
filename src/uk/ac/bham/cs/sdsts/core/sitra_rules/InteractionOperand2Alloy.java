@@ -1,3 +1,6 @@
+/***
+ *  Author: Yi Chen
+ */
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 import java.util.ArrayList;
