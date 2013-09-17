@@ -121,11 +121,11 @@ public class CombinedFragment2Alloy implements Rule {
 					// Special for ALT
 					if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.ALT_LITERAL){
 						interactionOperandSig.set_attr(AAttr.LONE);
-						for (Message message : getMessagesInOperand(interactionOperand)) {
-							ASig messageSig = AlloyModel.getInstance().getSig(currentSD_ + message.getName());
-							messageSig.set_attr(AAttr.LONE);
-							AlloyModel.getInstance().addFact("#%s=#%s", messageSig, interactionOperandSig).zone = "Number: Message = Operand";
-						}
+					}
+					for (Message message : getMessagesInOperand(interactionOperand)) {
+						ASig messageSig = AlloyModel.getInstance().getSig(currentSD_ + message.getName());
+						messageSig.set_attr(AAttr.LONE);
+						AlloyModel.getInstance().addFact("#%s=#%s", messageSig, interactionOperandSig).zone = "Number: Message = Operand";
 					}
 				}
 			}

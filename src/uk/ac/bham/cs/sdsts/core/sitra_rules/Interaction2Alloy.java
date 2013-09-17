@@ -9,7 +9,9 @@ import java.util.HashMap;
 import org.eclipse.uml2.uml.CombinedFragment;
 import org.eclipse.uml2.uml.Interaction;
 import org.eclipse.uml2.uml.InteractionFragment;
+import org.eclipse.uml2.uml.InteractionOperand;
 import org.eclipse.uml2.uml.Lifeline;
+import org.eclipse.uml2.uml.Message;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
 import org.eclipse.uml2.uml.internal.impl.InteractionImpl;
 
@@ -74,10 +76,14 @@ public class Interaction2Alloy implements Rule{
 		// iterate messages
 		ASig combinedFragmentAbstract = null;//AlloyModel.getInstance().getSig("COMBINEDFRAGMENT");
 		HashMap<String, ASig> lastElementOnLifeline = new HashMap<String, ASig>();
+		HashMap<String, ASig> messages = new HashMap<String, ASig>();
 		ArrayList<ASig> CFs = new ArrayList<ASig>();
 		ArrayList<ASig> nonCFs = new ArrayList<ASig>();
 		for (InteractionFragment interactionFragment : interaction.getFragments()) {
 			if(interactionFragment instanceof MessageOccurrenceSpecification){
+				Message message = ((MessageOccurrenceSpecification) interactionFragment).getMessage();
+				if(!messages.containsKey(currentSD_ + message.getName()))
+					messages.put(currentSD_ + message.getName(), AlloyModel.getInstance().getSig(currentSD_ + message.getName()));
 				for (Lifeline lifeline : interactionFragment.getCovereds()) {
 					ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
 					if(lastElementOnLifeline.containsKey(lifeline.getName())){
@@ -128,6 +134,10 @@ public class Interaction2Alloy implements Rule{
 				AlloyModel.getInstance().addFact("all _F: %s | _F !in %s.^(COVER.COVER)", aSig2, aSig).zone = "Covering: Operand->Fragment";
 			}
 		}
+		for (ASig aSig : messages.values()) {
+			AlloyModel.getInstance().addFact("#%s=#%s", aSig, SD).zone = "Number: Message = Operand";
+		}
+		
 		/**
 		***  Constraint: Fragment
 		**/
@@ -135,7 +145,7 @@ public class Interaction2Alloy implements Rule{
 		
 		return null;
 	}
-
+	
 	@Override
 	public void setProperties(Object target, Object source, Transformer t) {
 		// TODO Auto-generated method stub
