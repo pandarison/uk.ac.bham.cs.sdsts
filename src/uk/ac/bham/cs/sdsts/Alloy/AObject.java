@@ -6,13 +6,12 @@ package uk.ac.bham.cs.sdsts.Alloy;
 import java.util.HashMap;
 
 public abstract class AObject{
+	
 	protected AObject _this;
 	
 	// used to store some temporary items when generating alloy code
 	protected HashMap<String, Object> _notebook; 
-	
-	public abstract String toString();
-	
+		
 	// return Attribute and Name, e.g. one LifelineA
 	public abstract String getAName();
 	
