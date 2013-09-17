@@ -8,6 +8,15 @@ public abstract class AObject{
 	
 	public abstract String toString();
 	
+<<<<<<< HEAD
+=======
+	// used to store some temporary items when generating alloy code
+	protected HashMap<String, Object> _notebook; 
+	
+	public abstract String toString();
+	
+	// return Attribute and Name, e.g. one LifelineA
+>>>>>>> parent of 36da53d... fixed: *(COVER.COVER)
 	public abstract String getAName();
 	
 	public abstract String getName();

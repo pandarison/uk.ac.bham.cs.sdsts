@@ -3,6 +3,10 @@ package uk.ac.bham.cs.sdsts.Alloy;
 import java.util.ArrayList;
 
 public class AFact extends AObject{
+<<<<<<< HEAD
+=======
+	// format string of the fact
+>>>>>>> parent of 36da53d... fixed: *(COVER.COVER)
 	private String format;
 	private Object[] args;
 	
