@@ -1,6 +1,3 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.editor;
 
 import java.awt.Font;
@@ -184,7 +181,6 @@ public class AlloyEditor extends EditorPart {
 
 }
 
-// the following code was copied from Alloy library
 /** Graphical syntax-highlighting StyledDocument.
 *
 * <p><b>Thread Safety:</b> Can be called only by the AWT event thread

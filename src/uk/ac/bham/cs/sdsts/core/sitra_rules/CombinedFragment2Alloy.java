@@ -1,18 +1,22 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.uml2.uml.CombinedFragment;
 import org.eclipse.uml2.uml.InteractionConstraint;
 import org.eclipse.uml2.uml.InteractionFragment;
 import org.eclipse.uml2.uml.InteractionOperand;
 import org.eclipse.uml2.uml.InteractionOperatorKind;
+import org.eclipse.uml2.uml.LiteralString;
 import org.eclipse.uml2.uml.Message;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
+import org.eclipse.uml2.uml.Stereotype;
 import org.eclipse.uml2.uml.internal.impl.CombinedFragmentImpl;
+import org.eclipse.uml2.uml.internal.impl.InteractionOperandImpl;
+import org.eclipse.uml2.uml.internal.impl.UMLFactoryImpl;
+
 import uk.ac.bham.cs.sdsts.SDConsole;
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;
 import uk.ac.bham.cs.sdsts.Alloy.AFact;
@@ -21,6 +25,7 @@ import uk.ac.bham.cs.sdsts.Alloy.ASig;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.sitra.Rule;
 import uk.ac.bham.sitra.RuleNotFoundException;
+import uk.ac.bham.sitra.SimpleTransformerImpl;
 import uk.ac.bham.sitra.Transformer;
 
 @SuppressWarnings({ "rawtypes", "restriction" })
@@ -34,6 +39,7 @@ public class CombinedFragment2Alloy implements Rule {
 			return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object build(Object source, Transformer t) {
 		try {
@@ -99,6 +105,7 @@ public class CombinedFragment2Alloy implements Rule {
 					try {
 						int timeInt = Integer.parseInt(times);
 						
+						String tmpName = combinedFragment.getName() + "_" + interactionOperand.getName();
 						for (int i = 1; i <= timeInt; i++) {
 						    
 							ASig interactionOperandSig = (ASig) t.transform(interactionOperand);
@@ -121,11 +128,11 @@ public class CombinedFragment2Alloy implements Rule {
 					// Special for ALT
 					if(combinedFragment.getInteractionOperator() == InteractionOperatorKind.ALT_LITERAL){
 						interactionOperandSig.set_attr(AAttr.LONE);
-					}
-					for (Message message : getMessagesInOperand(interactionOperand)) {
-						ASig messageSig = AlloyModel.getInstance().getSig(currentSD_ + message.getName());
-						messageSig.set_attr(AAttr.LONE);
-						AlloyModel.getInstance().addFact("#%s=#%s", messageSig, interactionOperandSig).zone = "Number: Message = Operand";
+						for (Message message : getMessagesInOperand(interactionOperand)) {
+							ASig messageSig = AlloyModel.getInstance().getSig(currentSD_ + message.getName());
+							messageSig.set_attr(AAttr.LONE);
+							AlloyModel.getInstance().addFact("#%s=#%s", messageSig, interactionOperandSig).zone = "Number: Message = Operand";
+						}
 					}
 				}
 			}

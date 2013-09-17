@@ -1,6 +1,3 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.handler;
 
 import org.eclipse.core.commands.AbstractHandler;

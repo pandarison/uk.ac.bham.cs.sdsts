@@ -1,6 +1,3 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.Model;
 
 import org.eclipse.core.resources.IFile;

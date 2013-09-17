@@ -22,7 +22,6 @@ import uk.ac.bham.cs.sdsts.editor.AlloyEditorInput;
 
 public class CallOpenAlloyEditor extends AbstractHandler {
 
-	// Show code for single diagram
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		// Get the view
@@ -54,7 +53,6 @@ public class CallOpenAlloyEditor extends AbstractHandler {
 		}
 		return null;
 	}
-	// show code for merged diagram
 	public static void execute1() throws ExecutionException {
 		// Get the view
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();

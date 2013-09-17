@@ -1,6 +1,3 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.handler;
 
 import java.util.ArrayList;
@@ -33,8 +30,6 @@ public class CallMerge extends AbstractHandler {
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(window.getShell(), new LabelProvider());
 				
 		AlloyModel.clear();
-		
-		// display the dialog
 		dialog.setTitle("Select the equality file:");
 		ArrayList<String> eqFileList = new ArrayList<String>();
 		for (Model model : ModelManager.getInstance().getModels()) {
@@ -45,13 +40,11 @@ public class CallMerge extends AbstractHandler {
 		if(dialog.open() != Window.OK)
 			return null;
 		String result = dialog.getResult()[0].toString(); 
-		
-		// output message
 		SDConsole.print_stars();
 		SDConsole.print_has_time("Selected equality file: " + result);
+		
 		SDConsole.print_has_time("Start merging.");
 		
-		// add all sequence diagrams into AlloyModel
 		List<Model> models = ModelManager.getInstance().getModels();
 		for (Model model : models) {
 			if(model instanceof SequenceDiagram){
@@ -61,11 +54,8 @@ public class CallMerge extends AbstractHandler {
 				AlloyModel.getInstance().addModel(umlModel, model.getName());
 			}
 		}
-		
-		// get the equality model
 		Equality equality = (Equality) ModelManager.getInstance().getModel(result);
-		
-		// add all equalities into Alloy Model
+		//String[] lines = equality.getEqualities().split("\n");
 		for (String string : equality.getEqualities()) {
 			if(string.equals(""))continue;
 			String[] lr = string.split(" <=> ");
@@ -81,7 +71,6 @@ public class CallMerge extends AbstractHandler {
 			}
 			
 		}
-		// open Alloy Editor to display the code
 		CallOpenAlloyEditor.execute1();
 		SDConsole.print_has_time("== Ended ==");
 		SDConsole.print_stars();

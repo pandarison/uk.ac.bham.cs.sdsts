@@ -1,6 +1,3 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.handler;
 
 import java.io.File;
@@ -46,29 +43,22 @@ public class CallCreateSdFile extends AbstractHandler{
 	    IWorkbenchPage page = window.getActivePage();
 	    View view = (View) page.findView(View.ID);
 	    view.getViewer().refresh();
-	    
-	    // open dialog to get path
 	    FileDialog filedlg = new FileDialog(window.getShell(), SWT.SAVE);
 		filedlg.setText("Create Sequence Diagram File");
 		filedlg.setFilterPath("SystemRoot");
 		filedlg.setFilterExtensions(new String[]{"di"});
 		String selected=filedlg.open();
-		
-		// create & initial the sequence diagram
 		MyCreater myCreater = new MyCreater();
 		myCreater.init(window.getWorkbench(), new StructuredSelection()); // fixed bug
 		IFile iFile = myCreater.create(selected);
 		
-		// create the model 
 		SequenceDiagram sdDiagram = new SequenceDiagram();
 		sdDiagram.setiFile(iFile);
 		sdDiagram.setFilePath(new Path(selected).removeFileExtension().addFileExtension("uml").toOSString());
 		ModelManager.getInstance().AddModel(sdDiagram);
 		
-		// open the editor
 		myCreater.open(iFile);
 		
-		// refresh the model viewer
 		view.getViewer().refresh();
 
 	    return null;

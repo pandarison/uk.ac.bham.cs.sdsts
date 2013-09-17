@@ -1,6 +1,3 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.core.synthesis;
 
 import java.io.IOException;
@@ -11,8 +8,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.uml2.uml.Model;
 
-
-// read XML file and return UML Objects
 public class Xml2obj {
 
 	/**

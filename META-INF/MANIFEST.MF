@@ -1,32 +1,19 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-<<<<<<< HEAD
 Bundle-Name: uk.ac.bham.cs.sdsts
-Bundle-SymbolicName: uk.ac.bham.cs.sdstss;singleton:=true
-=======
-Bundle-Name: Sdsts
 Bundle-SymbolicName: uk.ac.bham.cs.sdsts;singleton:=true
->>>>>>> 98c422652499ee27f11d6fa88ebccfc707888fb9
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: uk.ac.bham.cs.sdsts.Activator
-Require-Bundle: 
- org.eclipse.papyrus.uml.diagram.sequence;bundle-version="0.9.2",
- org.eclipse.gmf.runtime.diagram.ui.properties,
- org.eclipse.papyrus.uml.diagram.common;bundle-version="0.9.2",
- org.eclipse.emf.databinding;bundle-version="1.2.0",
- org.eclipse.papyrus.views.properties;bundle-version="0.9.2",
- org.eclipse.uml2.uml.resources;bundle-version="4.0.2",
- org.eclipse.papyrus.uml.diagram.wizards;bundle-version="0.9.2",
- org.eclipse.papyrus.uml.diagram.clazz;bundle-version="0.9.2",
- org.eclipse.papyrus.uml.properties;bundle-version="0.9.2"
-Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: 
+Bundle-ClassPath: lib/alloy4.2.jar
+Require-Bundle: org.eclipse.papyrus.diagramtemplate.editor,
+ org.eclipse.papyrus.infra.extendedtypes,
+ org.eclipse.papyrus.uml.diagram.wizards,
+ org.eclipse.gmf.runtime.common.ui,
+ org.eclipse.papyrus.infra.core,
+ org.eclipse.uml2.uml.resources,
+ org.eclipse.gmf.runtime.notation;bundle-version="1.5.0",
+ org.eclipse.papyrus.uml.diagram.common;bundle-version="0.9.2",
+ org.eclipse.papyrus.views.properties;bundle-version="0.9.2",
  org.eclipse.papyrus.editor,
- org.eclipse.papyrus.uml.diagram.sequence,
- org.eclipse.papyrus.uml.diagram.sequence.edit.parts,
- org.eclipse.papyrus.uml.diagram.sequence.part,
- org.eclipse.papyrus.uml.diagram.sequence.providers,
- org.eclipse.ui.part
-Bundle-ClassPath: lib/alloy4.2.jar,
- src/
+ org.eclipse.papyrus.uml.diagram.sequence

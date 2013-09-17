@@ -263,7 +263,7 @@
          </property>
          <property
                name="windowImages"
-               value="icons/alt_window_16.gif,icons/icon32.png,icons/icon48.png,icons/icon64.png">
+               value="icons/alt_window_16.gif">
          </property>
       </product>
    </extension>
@@ -305,6 +305,42 @@
 <extension
       id="myproduct"
       name="myproduct"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="uk.ac.bham.cs.sdsts.application"
+         name="SD Synthesizer">
+      <property
+            name="windowImages"
+            value="icons/alt_window_16.gif">
+      </property>
+      <property
+            name="aboutText"
+            value="Sequence diagram synthesizer.">
+      </property>
+      <property
+            name="startupForegroundColor"
+            value="DD2E31">
+      </property>
+      <property
+            name="startupProgressRect"
+            value="0,280,455,15">
+      </property>
+      <property
+            name="startupMessageRect"
+            value="0,280,445,20">
+      </property>
+      <property
+            name="appName"
+            value="SD Synthesizer">
+      </property>
+      <property
+            name="preferenceCustomization"
+            value="plugin_customization.ini">
+      </property>
+   </product>
+</extension>
+<extension
+      id="product"
       point="org.eclipse.core.runtime.products">
    <product
          application="uk.ac.bham.cs.sdsts.application"
