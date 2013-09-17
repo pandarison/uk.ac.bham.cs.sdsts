@@ -15,7 +15,10 @@ import org.eclipse.uml2.uml.Message;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
 import org.eclipse.uml2.uml.internal.impl.InteractionImpl;
 
+import uk.ac.bham.cs.sdsts.Alloy.AAction;
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;
+import uk.ac.bham.cs.sdsts.Alloy.AFact;
+import uk.ac.bham.cs.sdsts.Alloy.AObject;
 import uk.ac.bham.cs.sdsts.Alloy.ASig;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.sitra.Rule;
@@ -119,9 +122,17 @@ public class Interaction2Alloy implements Rule{
 				}
 			}
 			ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
-			if(AlloyModel.getInstance().existSig("COMBINEDFRAGMENT"))
-				AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*(COVER.COVER).COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
-			else AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
+			AFact covering = AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*(COVER.COVER).COVER", fragmentSig, SD);
+			covering.zone = "Covering: Operand->Fragment";
+			covering.addAction(new AAction() {
+				@Override
+				public void run(AObject input) {
+					AFact fact = (AFact) input;
+					if(AlloyModel.getInstance().existSig("COMBINEDFRAGMENT"))
+						fact.setFormat("all _F: %s | _F in %s.*(COVER.COVER).COVER");
+					else fact.setFormat("all _F: %s | _F in %s.*COVER");
+				}
+			});
 			if(interactionFragment instanceof CombinedFragment)CFs.add(fragmentSig);
 			if(interactionFragment instanceof MessageOccurrenceSpecification)nonCFs.add(fragmentSig);
 		}
