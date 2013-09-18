@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SD Synthesizer" uid="SD Synthesizer" id="uk.ac.bham.cs.sdsts.myproduct" application="uk.ac.bham.cs.sdsts.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
+<product name="SD Synthesizer" uid="SD Synthesizer" id="uk.ac.bham.cs.sdsts.product" application="uk.ac.bham.cs.sdsts.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <text>
@@ -35,6 +35,7 @@
    <vm>
    </vm>
 
+
    <plugins>
       <plugin id="com.google.guava"/>
       <plugin id="com.google.inject"/>
@@ -58,9 +59,16 @@
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
       <plugin id="org.apache.batik.xml"/>
+      <plugin id="org.apache.commons.cli"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.log4j"/>
+<<<<<<< HEAD
+=======
+      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.lucene.core"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.apache.xerces"/>
       <plugin id="org.apache.xml.resolver"/>
       <plugin id="org.apache.xml.serializer"/>
@@ -86,6 +94,10 @@
       <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
+<<<<<<< HEAD
+=======
+      <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
@@ -198,12 +210,15 @@
       <plugin id="org.eclipse.emf.edit"/>
       <plugin id="org.eclipse.emf.edit.source"/>
       <plugin id="org.eclipse.emf.edit.ui"/>
+<<<<<<< HEAD
       <plugin id="org.eclipse.emf.edit.ui.source"/>
       <plugin id="org.eclipse.emf.eef.codegen.ecore"/>
       <plugin id="org.eclipse.emf.eef.codegen.launcher"/>
       <plugin id="org.eclipse.emf.example.installer"/>
       <plugin id="org.eclipse.emf.exporter"/>
       <plugin id="org.eclipse.emf.exporter.source"/>
+=======
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.emf.facet.aggregate.metamodel"/>
       <plugin id="org.eclipse.emf.facet.common.core"/>
       <plugin id="org.eclipse.emf.facet.common.ui"/>
@@ -255,6 +270,7 @@
       <plugin id="org.eclipse.emf.facet.widgets.table.ui"/>
       <plugin id="org.eclipse.emf.facet.widgets.table.ui.nattable"/>
       <plugin id="org.eclipse.emf.facet.widgets.table.ui.workbench"/>
+<<<<<<< HEAD
       <plugin id="org.eclipse.emf.importer"/>
       <plugin id="org.eclipse.emf.importer.ecore"/>
       <plugin id="org.eclipse.emf.importer.ecore.source"/>
@@ -280,6 +296,15 @@
       <plugin id="org.eclipse.emf.mapping.xsd2ecore"/>
       <plugin id="org.eclipse.emf.mapping.xsd2ecore.editor"/>
       <plugin id="org.eclipse.emf.mapping.xsd2ecore.editor.source"/>
+=======
+      <plugin id="org.eclipse.emf.mapping.ecore2xml"/>
+      <plugin id="org.eclipse.emf.mwe.core"/>
+      <plugin id="org.eclipse.emf.mwe.utils"/>
+      <plugin id="org.eclipse.emf.mwe2.language"/>
+      <plugin id="org.eclipse.emf.mwe2.launch"/>
+      <plugin id="org.eclipse.emf.mwe2.lib"/>
+      <plugin id="org.eclipse.emf.mwe2.runtime"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.emf.transaction"/>
       <plugin id="org.eclipse.emf.transaction.ui"/>
       <plugin id="org.eclipse.emf.validation"/>
@@ -309,11 +334,20 @@
       <plugin id="org.eclipse.equinox.p2.repository.tools"/>
       <plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
       <plugin id="org.eclipse.equinox.p2.ui"/>
+<<<<<<< HEAD
+=======
+      <plugin id="org.eclipse.equinox.p2.updatesite"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.ui"/>
+<<<<<<< HEAD
+=======
+      <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
       <plugin id="org.eclipse.equinox.util"/>
@@ -356,6 +390,12 @@
       <plugin id="org.eclipse.gmt.modisco.xml"/>
       <plugin id="org.eclipse.gmt.modisco.xml.discoverer"/>
       <plugin id="org.eclipse.help"/>
+<<<<<<< HEAD
+=======
+      <plugin id="org.eclipse.help.base"/>
+      <plugin id="org.eclipse.help.ui"/>
+      <plugin id="org.eclipse.jdt.annotation"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.jdt.apt.core"/>
       <plugin id="org.eclipse.jdt.compiler.apt" fragment="true"/>
       <plugin id="org.eclipse.jdt.compiler.tool" fragment="true"/>
@@ -384,6 +424,7 @@
       <plugin id="org.eclipse.modisco.infra.discovery.core"/>
       <plugin id="org.eclipse.modisco.infra.discovery.ui"/>
       <plugin id="org.eclipse.modisco.xml.discoverer"/>
+<<<<<<< HEAD
       <plugin id="org.eclipse.net4j"/>
       <plugin id="org.eclipse.net4j.db"/>
       <plugin id="org.eclipse.net4j.db.h2"/>
@@ -393,6 +434,8 @@
       <plugin id="org.eclipse.net4j.ui.shared"/>
       <plugin id="org.eclipse.net4j.util"/>
       <plugin id="org.eclipse.net4j.util.ui"/>
+=======
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.ocl"/>
       <plugin id="org.eclipse.ocl.common"/>
       <plugin id="org.eclipse.ocl.common.ui"/>
@@ -583,6 +626,22 @@
       <plugin id="org.eclipse.search"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
+<<<<<<< HEAD
+=======
+      <plugin id="org.eclipse.swt.gtk.aix.ppc" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.aix.ppc64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.hpux.ia64_32" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.s390" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.s390x" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.solaris.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.team.core"/>
       <plugin id="org.eclipse.team.ui"/>
       <plugin id="org.eclipse.text"/>
@@ -601,11 +660,15 @@
       <plugin id="org.eclipse.ui.views.properties.tabbed"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.ui.workbench.texteditor"/>
+<<<<<<< HEAD
       <plugin id="org.eclipse.uml2"/>
       <plugin id="org.eclipse.uml2.codegen.ecore"/>
       <plugin id="org.eclipse.uml2.codegen.ecore.source"/>
       <plugin id="org.eclipse.uml2.codegen.ecore.ui"/>
       <plugin id="org.eclipse.uml2.codegen.ecore.ui.source"/>
+=======
+      <plugin id="org.eclipse.uml2.codegen.ecore"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.uml2.common"/>
       <plugin id="org.eclipse.uml2.common.edit"/>
       <plugin id="org.eclipse.uml2.common.edit.source"/>
@@ -628,17 +691,23 @@
       <plugin id="org.eclipse.uml2.uml.editor"/>
       <plugin id="org.eclipse.uml2.uml.editor.source"/>
       <plugin id="org.eclipse.uml2.uml.profile.l2"/>
+<<<<<<< HEAD
       <plugin id="org.eclipse.uml2.uml.profile.l2.source"/>
       <plugin id="org.eclipse.uml2.uml.profile.l3"/>
       <plugin id="org.eclipse.uml2.uml.profile.l3.source"/>
       <plugin id="org.eclipse.uml2.uml.resources"/>
       <plugin id="org.eclipse.uml2.uml.resources.source"/>
       <plugin id="org.eclipse.uml2.uml.source"/>
+=======
+      <plugin id="org.eclipse.uml2.uml.profile.l3"/>
+      <plugin id="org.eclipse.uml2.uml.resources"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.update.configurator"/>
       <plugin id="org.eclipse.wst.common.core"/>
       <plugin id="org.eclipse.wst.common.uriresolver"/>
       <plugin id="org.eclipse.wst.sse.core"/>
       <plugin id="org.eclipse.wst.xml.core"/>
+<<<<<<< HEAD
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.eclipse.xsd.edit"/>
       <plugin id="org.eclipse.xtext"/>
@@ -648,6 +717,25 @@
       <plugin id="org.eclipse.xtext.ui"/>
       <plugin id="org.eclipse.xtext.ui.shared"/>
       <plugin id="org.eclipse.xtext.util"/>
+=======
+      <plugin id="org.eclipse.xpand"/>
+      <plugin id="org.eclipse.xtend"/>
+      <plugin id="org.eclipse.xtend.lib"/>
+      <plugin id="org.eclipse.xtend.typesystem.emf"/>
+      <plugin id="org.eclipse.xtext"/>
+      <plugin id="org.eclipse.xtext.builder"/>
+      <plugin id="org.eclipse.xtext.common.types"/>
+      <plugin id="org.eclipse.xtext.common.types.edit"/>
+      <plugin id="org.eclipse.xtext.common.types.ui"/>
+      <plugin id="org.eclipse.xtext.ecore"/>
+      <plugin id="org.eclipse.xtext.generator"/>
+      <plugin id="org.eclipse.xtext.gmf.glue"/>
+      <plugin id="org.eclipse.xtext.smap"/>
+      <plugin id="org.eclipse.xtext.ui"/>
+      <plugin id="org.eclipse.xtext.ui.shared"/>
+      <plugin id="org.eclipse.xtext.util"/>
+      <plugin id="org.eclipse.xtext.xbase"/>
+>>>>>>> 82deb137881ec59788dbf86e5d06639262a2398b
       <plugin id="org.eclipse.xtext.xbase.lib"/>
       <plugin id="org.eclipse.zest.layouts"/>
       <plugin id="org.h2"/>

@@ -1,6 +1,3 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.core.synthesis;
 
 import java.util.ArrayList;
@@ -26,11 +23,7 @@ import uk.ac.bham.sitra.Transformer;
 
 public class AlloyModel {
 	private String _current_SD;
-	
-	// store signatures
 	private HashMap<String, ASig> _sigs;
-	
-	// store facts
 	private HashMap<String, AFact> _facts;
 
 	public AFact addFact(String format, Object... args){
@@ -58,7 +51,6 @@ public class AlloyModel {
 		_sigs.remove(name);
 	}
 	
-	// return current SD's name
 	public String getSD(){
 		return _current_SD;
 	}
@@ -88,7 +80,6 @@ public class AlloyModel {
 		}
 	}
 	
-	// used to generate alloy code
 	@SuppressWarnings("rawtypes")
 	public String toResult(String filter, HashMap data, boolean print_fact){
 		String string = printTitle(filter);
@@ -101,12 +92,10 @@ public class AlloyModel {
 		string += "\n\n";
 		return string;
 	}
-	// used to generate alloy code
 	private static String printTitle(String title){
 		String string = String.format("/**\n***  %s\n**/\n", title);
 		return string;
 	}
-	// used to generate alloy code
 	public String getResult(){
 		String string = "";
 		string += toResult("Abstract", _sigs, false);
@@ -140,7 +129,6 @@ public class AlloyModel {
 		return string;
 	}
 	
-	// Add a equality of life lines. parameters are the name of the two life lines.
 	private void addEqLifeline(String lifeline1, String lifeline2){
 		try {
 			// two life lines to be equal cannot be in the same SD
@@ -155,6 +143,8 @@ public class AlloyModel {
 			ASig lifeline1Sig = this.getSig(lifeline1.split(":")[0]);
 			ASig lifeline2Sig = this.getSig(lifeline2.split(":")[0]);
 			
+			
+
 			// add fact
 			// all SD1L:SD1_Lifeline_1 , SD2L:SD2_Lifeline_2 | SD1L.name = SD2L.name && SD1L.type = SD2L.type
 			String fact = String.format("all SD1L:%s , SD2L:%s | (SD1L.NAME = SD2L.NAME && SD1L.CLASS = SD2L.CLASS) => # SD2L = 0", lifeline1Sig.get_name(), lifeline2Sig.get_name());
@@ -169,7 +159,6 @@ public class AlloyModel {
 			e.printStackTrace();
 		}
 	}
-	// Add a equality of messages. parameters are the name of the two messages.
 	private void addEqMessage(String message1, String message2){
 		// two messages to be equal cannot be in the same SD
 		String sdID1 = message1.split("_")[0];
@@ -178,17 +167,14 @@ public class AlloyModel {
 			SDConsole.print_has_time("Can not add equality between messages in the same diagram.\nThis equality has been ignored.");
 			return ;
 		}
-		// get the signatures of the messages
 		ASig message1Sig = this.getSig(message1);
 		ASig message2Sig = this.getSig(message2);
 		
-		// get the events of the messages
 		ASig message1SendSig = (ASig) message1Sig.getNote("SEND");
 		ASig message1RecSig = (ASig) message1Sig.getNote("RECEIVE");
 		ASig message2SendSig = (ASig) message2Sig.getNote("SEND");
 		ASig message2RecSig = (ASig) message2Sig.getNote("RECEIVE");
 		
-		// get the life lines of the events
 		ASig message1SendLifelineSig = (ASig) message1SendSig.getNote("COVER");
 		ASig message1RecLifelineSig = (ASig) message1RecSig.getNote("COVER");
 		ASig message2SendLifelineSig = (ASig) message2SendSig.getNote("COVER");
@@ -206,12 +192,12 @@ public class AlloyModel {
 		}
 		
 		
-		// add fact to hide the 2nd message
+		
 		this.addFact(String.format("all SD1M:%s , SD2M:%s | (SD1M.NAME = SD2M.NAME) => # SD2M = 0", message1Sig.get_name(), message2Sig.get_name())).zone = "Glue";
 		this.addFact(String.format("# %s = 0", message2SendSig.get_name())).zone = "Glue";
 		this.addFact(String.format("# %s = 0", message2RecSig.get_name())).zone = "Glue";
 		
-		// merged the send message to first
+		
 		message2Sig.mergeTo(message1Sig);
 		message2SendSig.mergeTo(message1SendSig);
 		message2RecSig.mergeTo(message1RecSig);
@@ -222,7 +208,6 @@ public class AlloyModel {
 		message2RecSig.set_attr(AAttr.LONE);
 	}
 	
-	// add equality, invoke by outside
 	public boolean addEquality(String lName, String rName){
 		Object lObject = _sigs.get(lName), rObject = _sigs.get(rName);
 		if(lObject != null && rObject != null){
@@ -236,7 +221,6 @@ public class AlloyModel {
 		return false;
 	}
 	
-	// clear the data in Alloy Model
 	public static void clear(){
 		_instance = null;
 	}

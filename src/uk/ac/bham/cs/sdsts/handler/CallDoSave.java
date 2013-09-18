@@ -1,6 +1,3 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.handler;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -16,7 +13,16 @@ public class CallDoSave extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		// save current file
+//		IEditorReference[] editorReferences = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+//		NullProgressMonitor monitor = new NullProgressMonitor();
+//		if ( editorReferences != null ){ 
+//		    for (IEditorReference iEditorReference : editorReferences) {
+//		        IEditorPart editor = iEditorReference.getEditor(false);
+//		        
+//		        if ( editor.isDirty() )
+//		            editor.doSave(monitor);
+//		    }
+//		}
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		editor.doSave(monitor);

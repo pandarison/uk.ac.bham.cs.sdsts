@@ -1,6 +1,3 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;

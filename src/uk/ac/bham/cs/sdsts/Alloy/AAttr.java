@@ -1,9 +1,5 @@
-/***
- *  Author: Yi Chen
- */
 package uk.ac.bham.cs.sdsts.Alloy;
 
-// Attribution of Alloy signatures
 public enum AAttr {
 	ONE, LONE, ABSTRACT, SET;
 	@Override
