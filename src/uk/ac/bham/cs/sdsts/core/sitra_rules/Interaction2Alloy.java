@@ -1,3 +1,6 @@
+/***
+ *  Author: Yi Chen
+ */
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 import java.util.ArrayList;
@@ -6,12 +9,16 @@ import java.util.HashMap;
 import org.eclipse.uml2.uml.CombinedFragment;
 import org.eclipse.uml2.uml.Interaction;
 import org.eclipse.uml2.uml.InteractionFragment;
+import org.eclipse.uml2.uml.InteractionOperand;
 import org.eclipse.uml2.uml.Lifeline;
 import org.eclipse.uml2.uml.Message;
 import org.eclipse.uml2.uml.MessageOccurrenceSpecification;
 import org.eclipse.uml2.uml.internal.impl.InteractionImpl;
 
+import uk.ac.bham.cs.sdsts.Alloy.AAction;
 import uk.ac.bham.cs.sdsts.Alloy.AAttr;
+import uk.ac.bham.cs.sdsts.Alloy.AFact;
+import uk.ac.bham.cs.sdsts.Alloy.AObject;
 import uk.ac.bham.cs.sdsts.Alloy.ASig;
 import uk.ac.bham.cs.sdsts.core.synthesis.AlloyModel;
 import uk.ac.bham.sitra.Rule;
@@ -72,10 +79,14 @@ public class Interaction2Alloy implements Rule{
 		// iterate messages
 		ASig combinedFragmentAbstract = null;//AlloyModel.getInstance().getSig("COMBINEDFRAGMENT");
 		HashMap<String, ASig> lastElementOnLifeline = new HashMap<String, ASig>();
+		HashMap<String, ASig> messages = new HashMap<String, ASig>();
 		ArrayList<ASig> CFs = new ArrayList<ASig>();
 		ArrayList<ASig> nonCFs = new ArrayList<ASig>();
 		for (InteractionFragment interactionFragment : interaction.getFragments()) {
 			if(interactionFragment instanceof MessageOccurrenceSpecification){
+				Message message = ((MessageOccurrenceSpecification) interactionFragment).getMessage();
+				if(!messages.containsKey(currentSD_ + message.getName()))
+					messages.put(currentSD_ + message.getName(), AlloyModel.getInstance().getSig(currentSD_ + message.getName()));
 				for (Lifeline lifeline : interactionFragment.getCovereds()) {
 					ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
 					if(lastElementOnLifeline.containsKey(lifeline.getName())){
@@ -111,9 +122,17 @@ public class Interaction2Alloy implements Rule{
 				}
 			}
 			ASig fragmentSig = AlloyModel.getInstance().getSig(currentSD_ + interactionFragment.getName());
-			if(AlloyModel.getInstance().existSig("COMBINEDFRAGMENT"))
-				AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*(COVER.COVER).COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
-			else AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*COVER", fragmentSig, SD).zone = "Covering: Operand->Fragment";
+			AFact covering = AlloyModel.getInstance().addFact("all _F: %s | _F in %s.*(COVER.COVER).COVER", fragmentSig, SD);
+			covering.zone = "Covering: Operand->Fragment";
+			covering.addAction(new AAction() {
+				@Override
+				public void run(AObject input) {
+					AFact fact = (AFact) input;
+					if(AlloyModel.getInstance().existSig("COMBINEDFRAGMENT"))
+						fact.setFormat("all _F: %s | _F in %s.*(COVER.COVER).COVER");
+					else fact.setFormat("all _F: %s | _F in %s.*COVER");
+				}
+			});
 			if(interactionFragment instanceof CombinedFragment)CFs.add(fragmentSig);
 			if(interactionFragment instanceof MessageOccurrenceSpecification)nonCFs.add(fragmentSig);
 		}
@@ -126,6 +145,10 @@ public class Interaction2Alloy implements Rule{
 				AlloyModel.getInstance().addFact("all _F: %s | _F !in %s.^(COVER.COVER)", aSig2, aSig).zone = "Covering: Operand->Fragment";
 			}
 		}
+		for (ASig aSig : messages.values()) {
+			AlloyModel.getInstance().addFact("#%s=#%s", aSig, SD).zone = "Number: Message = Operand";
+		}
+		
 		/**
 		***  Constraint: Fragment
 		**/
@@ -133,7 +156,7 @@ public class Interaction2Alloy implements Rule{
 		
 		return null;
 	}
-
+	
 	@Override
 	public void setProperties(Object target, Object source, Transformer t) {
 		// TODO Auto-generated method stub

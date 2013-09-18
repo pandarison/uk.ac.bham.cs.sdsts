@@ -1,3 +1,6 @@
+/***
+ *  Author: Yi Chen
+ */
 package uk.ac.bham.cs.sdsts.core.sitra_rules;
 
 
@@ -47,7 +50,7 @@ public class Message2Alloy implements Rule{
 		eventAbstract.AddField("COVER", lifelineAbstract.oneOf());
 		eventAbstract.zone = "Abstract";
 		
-		// add abstract for  	
+		// add abstract for Message
 		// abstract sig MESSAGE{SEND:one EVENT, RECEIVE:one EVENT}
 		ASig messageAbstract = AlloyModel.getInstance().getSig("MESSAGE");
 		messageAbstract.set_attr(AAttr.ABSTRACT);
