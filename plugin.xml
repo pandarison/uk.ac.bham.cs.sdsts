@@ -339,6 +339,105 @@
       </property>
    </product>
 </extension>
+<extension
+      id="product"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="uk.ac.bham.cs.sdsts.application"
+         name="SD Synthesis">
+      <property
+            name="windowImages"
+            value="icons/icon32.png,icons/icon48.png,icons/sdsts/window.png">
+      </property>
+      <property
+            name="aboutText"
+            value="Automated Sequence Diagram Synthesizer">
+      </property>
+      <property
+            name="startupForegroundColor"
+            value="DD2E31">
+      </property>
+      <property
+            name="startupProgressRect"
+            value="0,280,455,15">
+      </property>
+      <property
+            name="startupMessageRect"
+            value="0,280,445,20">
+      </property>
+      <property
+            name="appName"
+            value="SD Synthesis">
+      </property>
+      <property
+            name="preferenceCustomization"
+            value="plugin_customization.ini">
+      </property>
+   </product>
+</extension>
+<extension
+      id="product"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="uk.ac.bham.cs.sdsts.application"
+         name="SD Synthesis">
+      <property
+            name="windowImages"
+            value="icons/icon32.png,icons/icon48.png,icons/sdsts/window.png">
+      </property>
+      <property
+            name="aboutText"
+            value="Automated Sequence Diagram Synthesizer">
+      </property>
+      <property
+            name="startupForegroundColor"
+            value="DD2E31">
+      </property>
+      <property
+            name="startupProgressRect"
+            value="0,280,455,15">
+      </property>
+      <property
+            name="startupMessageRect"
+            value="0,280,445,20">
+      </property>
+      <property
+            name="preferenceCustomization">
+      </property>
+   </product>
+</extension>
+<extension
+      id="product"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="uk.ac.bham.cs.sdsts.application"
+         name="SD Synthesis">
+      <property
+            name="windowImages"
+            value="icons/icon32.png,icons/icon48.png,icons/sdsts/window.png">
+      </property>
+      <property
+            name="aboutText"
+            value="Automated Sequence Diagram Synthesizer">
+      </property>
+      <property
+            name="startupForegroundColor"
+            value="DD2E31">
+      </property>
+      <property
+            name="startupProgressRect"
+            value="0,280,455,15">
+      </property>
+      <property
+            name="startupMessageRect"
+            value="0,280,445,20">
+      </property>
+      <property
+            name="preferenceCustomization"
+            value="plugin_customization.ini">
+      </property>
+   </product>
+</extension>
 
    
 </plugin>
